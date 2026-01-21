@@ -3,11 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#4f46e5">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>WalletPoint - App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Wallet Point</title>
+    <!-- Modern System Font Stack (No External Dependencies) -->
+
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -15,16 +14,51 @@
 
 <body>
     <div class="dashboard-layout">
+        <!-- Mobile Sidebar Overlay -->
+        <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="mainSidebar">
+            <div class="sidebar-header">
+                <div class="brand-text">WalletPoint</div>
+            </div>
+
+            <nav class="nav-menu" id="sidebarNav">
+                <!-- Navigation items will be injected by JS based on role -->
+            </nav>
+
+            <div class="profile-footer">
+                <div class="user-pill">
+                    <div class="user-avatar" id="userAvatar">?</div>
+                    <div class="user-details">
+                        <h4 id="userName">Nama Pengguna</h4>
+                        <span id="userRole">Peran</span>
+                    </div>
+                </div>
+                <button onclick="API.logout()" class="btn btn-block"
+                    style="margin-top: 1rem; color: var(--error); background: #fee2e2; padding: 0.6rem;">
+                    Keluar
+                </button>
+            </div>
+        </aside>
+
         <!-- Main Content Area -->
         <main class="main-content">
             <header class="top-bar">
+                <button id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
                 <div class="page-info">
                     <h1 id="pageTitle">Ringkasan</h1>
                 </div>
                 <div class="top-actions">
-                    <div class="user-avatar-mini" id="userAvatarMini" onclick="handleNavigation('profile', 'mahasiswa')"
-                        style="width: 35px; height: 35px; background: var(--primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; cursor: pointer;">
-                        ?</div>
+                    <button class="btn btn-primary" id="globalActionBtn" style="display:none; font-size: 0.875rem;">+
+                        Aksi</button>
                 </div>
             </header>
 
@@ -32,11 +66,6 @@
                 <!-- Dashboard content will be injected here -->
             </div>
         </main>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav" id="bottomNav">
-            <!-- Navigation items will be injected by JS based on role -->
-        </nav>
     </div>
 
     <!-- Scripts -->

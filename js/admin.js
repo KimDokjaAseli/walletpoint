@@ -185,6 +185,7 @@ class AdminController {
             <div class="table-wrapper">
                 <div class="table-header">
                     <h3>Daftar Akun Pengguna</h3>
+                    <button class="btn btn-primary" onclick="AdminController.showAddUserModal()">+ Tambah Pengguna</button>
                 </div>
                 <div style="overflow-x: auto;">
                     <table class="premium-table" id="usersTable">
@@ -195,7 +196,7 @@ class AdminController {
                                 <th>NIM/NIP</th>
                                 <th>Peran</th>
                                 <th>Status</th>
-                                <th class="text-right">Keterangan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody><tr><td colspan="6" class="text-center">Memuat...</td></tr></tbody>
@@ -221,8 +222,13 @@ class AdminController {
                     <td><code>${user.nim_nip}</code></td>
                     <td><span class="badge badge-info">${user.role}</span></td>
                     <td><span class="badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">${user.status}</span></td>
-                    <td class="text-right">
-                        <small style="color: var(--text-muted);">Monitoring Saja</small>
+                    <td>
+                        <button class="btn-icon" onclick="AdminController.showEditUserModal(${user.id})" title="Edit Pengguna">✏️</button>
+                        <button class="btn-icon" onclick="AdminController.resetPassword(${user.id})" title="Reset Password">🔑</button>
+                        ${user.status === 'active'
+                    ? `<button class="btn-icon" style="color:var(--error)" onclick="AdminController.toggleUserStatus(${user.id}, 'inactive')">🚫</button>`
+                    : `<button class="btn-icon" style="color:var(--success)" onclick="AdminController.toggleUserStatus(${user.id}, 'active')">✅</button>`
+                }
                     </td>
                 </tr>
             `).join('');
@@ -234,7 +240,7 @@ class AdminController {
         tabContent.innerHTML = `
             <div class="table-wrapper">
                 <div class="table-header">
-                    <h3>Status Dompet Pengguna</h3>
+                    <h3>Status & Penyesuaian Dompet</h3>
                 </div>
                 <div style="overflow-x: auto;">
                     <table class="premium-table" id="walletsTable">
@@ -243,7 +249,7 @@ class AdminController {
                                 <th>Akun</th>
                                 <th>Peran</th>
                                 <th>Saldo Emerald</th>
-                                <th class="text-right">Keterangan</th>
+                                <th>Aksi Cepat</th>
                             </tr>
                         </thead>
                         <tbody><tr><td colspan="4" class="text-center">Memuat Dompet...</td></tr></tbody>
@@ -265,8 +271,9 @@ class AdminController {
                     </td>
                     <td><span class="badge badge-info">${w.role}</span></td>
                     <td style="font-size: 1.1em; font-weight: 800; color: var(--primary)">${w.balance.toLocaleString()} pts</td>
-                    <td class="text-right">
-                        <small style="color: var(--text-muted);">View Only</small>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="AdminController.showAdjustModal(${w.wallet_id}, '${w.full_name}')" style="font-size: 0.7rem;">Sesuaikan ⚖️</button>
+                        <button class="btn btn-sm" style="background: #fee2e2; color: #991b1b; font-size: 0.7rem;" onclick="AdminController.showResetModal(${w.wallet_id}, '${w.full_name}')">Reset ⚠️</button>
                     </td>
                 </tr>
             `).join('');
@@ -357,7 +364,120 @@ class AdminController {
         } catch (e) { console.error(e); }
     }
 
+    // ==========================
+    // MODULE: DATA PRODUK (Integrated)
+    // ==========================
+    static async renderProducts(activeTab = 'catalog') {
+        const content = document.getElementById('mainContent');
+        content.innerHTML = `
+            <div class="fade-in">
+                <div class="tab-header" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                    <button class="tab-btn ${activeTab === 'catalog' ? 'active' : ''}" onclick="AdminController.renderProducts('catalog')">Katalog Produk</button>
+                    <button class="tab-btn ${activeTab === 'sales' ? 'active' : ''}" onclick="AdminController.renderProducts('sales')">Riwayat Penjualan</button>
+                </div>
+                <div id="tabContent"></div>
+            </div>
+        `;
 
+        if (activeTab === 'catalog') await this.renderCatalog();
+        else if (activeTab === 'sales') await this.renderSalesHistory();
+    }
+
+    static async renderCatalog() {
+        const tabContent = document.getElementById('tabContent');
+        tabContent.innerHTML = `
+            <div class="table-header" style="margin-bottom: 2rem;">
+                <div>
+                    <h3>Manajemen Inventaris Produk</h3>
+                </div>
+                <button class="btn btn-primary" onclick="AdminController.showProductModal()">+ Tambah Produk</button>
+            </div>
+            <div class="table-wrapper">
+                <div style="overflow-x: auto;">
+                    <table class="premium-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Gambar</th>
+                                <th>Nama Produk</th>
+                                <th>Harga</th>
+                                <th>Stok</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td colspan="7" class="text-center">Belum ada produk.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+
+        try {
+            const result = await API.getProducts({ limit: 100 });
+            const products = result.data.products || [];
+            const tbody = document.querySelector('#productsTable tbody');
+
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Belum ada produk.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td>#${p.id}</td>
+                    <td><div class="table-img" style="background: linear-gradient(135deg, var(--primary-light), var(--primary)); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: white; border-radius: 8px;">📦</div></td>
+                    <td>
+                        <div style="font-weight: 600;">${p.name}</div>
+                        <small style="color: var(--text-muted);">${p.category || 'Umum'}</small>
+                    </td>
+                    <td style="font-weight: 700; color: var(--primary);">${p.price.toLocaleString()}</td>
+                    <td>${p.stock} unit</td>
+                    <td>
+                        <button class="btn btn-sm" onclick="AdminController.showProductModal(${p.id})" style="margin-right:0.5rem;">✏️</button>
+                        <button class="btn btn-sm btn-danger" onclick="AdminController.deleteProduct(${p.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (e) { console.error(e); }
+    }
+
+    static async renderSalesHistory() {
+        const tabContent = document.getElementById('tabContent');
+        tabContent.innerHTML = `
+            <div class="table-wrapper">
+                <div class="table-header">
+                    <h3>Data Penjualan Marketplace</h3>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="premium-table" id="salesTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Pembeli</th>
+                                <th>Produk</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody><tr><td colspan="4" class="text-center">Memuat Penjualan...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+
+        try {
+            const result = await API.getMarketplaceTransactions({ limit: 50 });
+            const items = result.data.transactions || [];
+            const tbody = document.querySelector('#salesTable tbody');
+
+            tbody.innerHTML = items.map(t => `
+                <tr>
+                    <td><small>${new Date(t.created_at).toLocaleString()}</small></td>
+                    <td><strong>${t.user_name}</strong></td>
+                    <td><strong>${t.product_name}</strong> (x${t.quantity})</td>
+                    <td style="font-weight: 800; color: var(--success)">+${t.amount.toLocaleString()} pts</td>
+                </tr>
+            `).join('');
+        } catch (e) { console.error(e); }
+    }
 
     static async renderAuditLogs() {
         const content = document.getElementById('mainContent');
@@ -501,6 +621,59 @@ class AdminController {
     }
 
 
+    static async showProductModal(id = null) {
+        let product = null;
+        if (id) { try { const res = await API.request(`/admin/products/${id}`, 'GET'); product = res.data; } catch (e) { console.error(e); } }
+        const modalHtml = `
+            <div class="modal-overlay" onclick="closeModal(event)">
+                <div class="modal-card">
+                    <div class="modal-head"><h3>${id ? '🛠️ Edit' : '🎁 Baru'}</h3><button class="btn-icon" onclick="closeModal()">×</button></div>
+                    <div class="modal-body">
+                        <form id="productForm" onsubmit="AdminController.handleProductSubmit(event, ${id})">
+                            <div class="form-group"><label>Nama</label><input type="text" name="name" value="${product?.name || ''}" required></div>
+                            <div class="form-group"><label>Deskripsi</label><textarea name="description">${product?.description || ''}</textarea></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group"><label>Harga</label><input type="number" name="price" value="${product?.price || ''}" required min="1"></div>
+                                <div class="form-group"><label>Stok</label><input type="number" name="stock" value="${product?.stock || 0}" required min="0"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Gambar Produk</label>
+                                ${product?.image_url ?
+                `<div style="margin-bottom:0.5rem;"><img src="${product.image_url.startsWith('http') ? product.image_url : `${CONFIG.BASE_URL}/${product.image_url.replace(/^\/+/, '')}`}" style="height:50px; border-radius:4px;"></div>`
+                : ''}
+                                <input type="file" name="image" accept="image/*">
+                                <input type="hidden" name="image_url" value="${product?.image_url || ''}">
+                                <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem; display: block;">Unggah file gambar dari penyimpanan lokal.</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select name="status">
+                                    <option value="active" ${product?.status === 'active' ? 'selected' : ''}>Aktif</option>
+                                    <option value="inactive" ${product?.status === 'inactive' ? 'selected' : ''}>Tidak Aktif</option>
+                                </select>
+                            </div>
+                            <div class="form-actions"><button type="button" class="btn" onclick="closeModal()">Batal</button><button type="submit" class="btn btn-primary">Simpan</button></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    static async handleProductSubmit(e, id) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const endpoint = id ? `/admin/products/${id}` : '/admin/products';
+        const method = id ? 'PUT' : 'POST';
 
+        try {
+            await API.request(endpoint, method, formData);
+            closeModal(); AdminController.renderProducts('catalog'); showToast("Selesai");
+        } catch (e) { showToast(e.message, "error"); }
+    }
+    static async deleteProduct(id) {
+        if (!confirm('Hapus?')) return;
+        try { await API.deleteProduct(id); AdminController.renderProducts('catalog'); } catch (e) { showToast(e.message, 'error'); }
+    }
 
 }

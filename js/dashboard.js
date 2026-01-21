@@ -25,16 +25,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function updateUserProfile(user) {
-    const avatar = (user.full_name || user.email).charAt(0).toUpperCase();
-    const miniAvatar = document.getElementById('userAvatarMini');
-    if (miniAvatar) miniAvatar.textContent = avatar;
-
-    // Fallback for any other avatar elements
-    const mainAvatar = document.getElementById('userAvatar');
-    if (mainAvatar) mainAvatar.textContent = avatar;
-
-    const userName = document.getElementById('userName');
-    if (userName) userName.textContent = user.full_name || user.email;
+    document.getElementById('userName').textContent = user.full_name || user.email;
+    document.getElementById('userRole').textContent = user.role;
+    document.getElementById('userAvatar').textContent = (user.full_name || user.email).charAt(0).toUpperCase();
 }
 
 function showToast(message, type = 'success') {
@@ -69,58 +62,57 @@ function closeModal(e) {
 }
 
 function renderNavigation(role) {
-    const nav = document.getElementById('bottomNav');
-    if (!nav) return;
-
+    const nav = document.getElementById('sidebarNav');
     let items = [];
 
-    // Navigation configuration with icons
     if (role === 'admin') {
         items.push(
-            { label: 'Beranda', href: '#dashboard', icon: '🏠', active: true },
-            { label: 'User', href: '#users', icon: '👥' },
-            { label: 'Logs', href: '#audit-logs', icon: '📜' },
-            { label: 'Profil', href: '#profile', icon: '👤' }
+            { label: 'Dashboard', href: '#dashboard', active: true },
+            { label: 'Data Pengguna', href: '#users' },
+            { label: 'Data Produk', href: '#products' },
+            { label: 'Log Audit', href: '#audit-logs' }
         );
     } else if (role === 'dosen') {
         items.push(
-            { label: 'Beranda', href: '#dashboard', icon: '🏠', active: true },
-            { label: 'Misi', href: '#missions', icon: '🎯' },
-            { label: 'Market', href: '#products', icon: '🛍️' },
-            { label: 'Profil', href: '#profile', icon: '👤' }
+            { label: 'Dashboard', href: '#dashboard', active: true },
+            { label: 'Buat Quis', href: '#quizzes' },
+            { label: 'Buat Misi', href: '#missions' },
+            { label: 'Approval', href: '#submissions' },
+            { label: 'Data Siswa', href: '#dosen-students' }
         );
     } else if (role === 'mahasiswa') {
         items.push(
-            { label: 'Beranda', href: '#dashboard', icon: '🏠', active: true },
-            { label: 'Misi', href: '#missions', icon: '🎯' },
-            { label: 'Pindai', href: '#transfer-scan', icon: '📸' },
-            { label: 'Pasar', href: '#shop', icon: '🛍️' },
-            { label: 'Profil', href: '#profile', icon: '👤' }
+            { label: 'Pusat Kendali', href: '#dashboard', active: true },
+            { label: 'Misi & Gamifikasi', href: '#missions' },
+            { label: 'MarketPlace', href: '#shop' },
+            { label: 'Transaksi & Pindai', href: '#transfer-scan' }
         );
     } else if (role === 'merchant') {
         items.push(
-            { label: 'Beranda', href: '#merchant-dashboard', icon: '🏠', active: true },
-            { label: 'Pindai', href: '#merchant-scanner', icon: '📸' },
-            { label: 'Profil', href: '#profile', icon: '👤' }
+            { label: 'Dashboard', href: '#merchant-dashboard', active: true }
         );
     }
 
+    items.push({ label: 'Pengaturan', href: '#profile' });
+
     nav.innerHTML = items.map(item => `
-        <a href="${item.href}" class="bottom-nav-item ${item.active ? 'active' : ''}" data-target="${item.href.substring(1)}">
-            <div class="nav-icon-bg">
-                <span class="nav-icon">${item.icon}</span>
-            </div>
-            <span>${item.label}</span>
+        <a href="${item.href}" class="nav-item ${item.active ? 'active' : ''}" data-target="${item.href.substring(1)}">
+            ${item.label}
         </a>
     `).join('');
 
     // Add click listeners
-    nav.querySelectorAll('.bottom-nav-item').forEach(link => {
+    nav.querySelectorAll('.nav-item').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            nav.querySelectorAll('.bottom-nav-item').forEach(l => l.classList.remove('active'));
+            nav.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
             link.classList.add('active');
             handleNavigation(link.dataset.target, role);
+
+            // Auto close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
         });
     });
 }
@@ -166,9 +158,6 @@ function handleNavigation(target, role) {
                 break;
             case 'submissions':
                 DosenController.renderSubmissions();
-                break;
-            case 'products':
-                DosenController.renderProducts();
                 break;
             case 'dosen-students':
                 DosenController.renderStudents();
@@ -537,6 +526,15 @@ async function loadDosenQuickReview() {
     } catch (e) { console.error(e); }
 }
 
-// function toggleSidebar() {
-//    // Obsolete in mobile-first design
-// }
+function toggleSidebar() {
+    const sidebar = document.getElementById('mainSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    if (sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+    } else {
+        sidebar.classList.add('active');
+        if (overlay) overlay.classList.add('active');
+    }
+}

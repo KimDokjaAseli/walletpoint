@@ -145,22 +145,22 @@ class API {
     // ========================================
     static async getProducts(params = {}) {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (user && (user.role === 'admin' || user.role === 'dosen')) {
-            return API.request('/dosen/products', 'GET', null, params);
+        if (user && user.role === 'admin') {
+            return API.request('/admin/products', 'GET', null, params);
         }
         return API.request('/mahasiswa/marketplace/products', 'GET', null, params);
     }
 
     static async createProduct(productData) {
-        return API.request('/dosen/products', 'POST', productData);
+        return API.request('/admin/products', 'POST', productData);
     }
 
     static async updateProduct(id, productData) {
-        return API.request(`/dosen/products/${id}`, 'PUT', productData);
+        return API.request(`/admin/products/${id}`, 'PUT', productData);
     }
 
     static async deleteProduct(id) {
-        return API.request(`/dosen/products/${id}`, 'DELETE');
+        return API.request(`/admin/products/${id}`, 'DELETE');
     }
 
     static async getAuditLogs(params = {}) {
@@ -172,7 +172,7 @@ class API {
     }
 
     static async getMarketplaceTransactions(params = {}) {
-        return API.request('/dosen/marketplace/transactions', 'GET', null, params);
+        return API.request('/admin/marketplace/transactions', 'GET', null, params);
     }
 
     static async getAdminStats() {
