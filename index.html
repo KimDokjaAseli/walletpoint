@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>WalletPoint - App</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="page-info">
+                    <h1 id="pageTitle">Ringkasan</h1>
+                </div>
+                <div class="top-actions">
+                    <div class="user-avatar-mini" id="userAvatarMini" onclick="handleNavigation('profile', 'mahasiswa')"
+                        style="width: 35px; height: 35px; background: var(--primary); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; cursor: pointer;">
+                        ?</div>
+                </div>
+            </header>
+
+            <div class="content-body" id="mainContent">
+                <!-- Dashboard content will be injected here -->
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" id="bottomNav">
+            <!-- Navigation items will be injected by JS based on role -->
+        </nav>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/dosen.js"></script>
+    <script src="js/mahasiswa.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

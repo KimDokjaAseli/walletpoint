@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - Wallet Point</title>
+    <!-- Modern System Font Stack (No External Dependencies) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="auth-page">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo-big">WP</div>
+            <h2>Selamat Datang Kembali</h2>
+            <p style="color: var(--text-muted); margin-top: -1.5rem; margin-bottom: 2rem; font-size: 0.875rem;">
+                Masukkan kredensial Anda untuk mengakses dashboard</p>
+        </div>
+        <form id="loginForm">
+            <div id="errorMessage" class="error hidden"
+                style="margin-bottom: 1.5rem; padding: 0.75rem; background: #fee2e2; color: #991b1b; border-radius: 0.5rem; font-size: 0.875rem;">
+            </div>
+            <div class="form-group">
+                <label for="email">Alamat Email</label>
+                <input type="email" id="email" placeholder="nama@email.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Kata Sandi</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Masuk ke Dashboard</button>
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem;">
+                Belum punya akun? <a href="register.html"
+                    style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Daftar di sini</a>
+            </p>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>
