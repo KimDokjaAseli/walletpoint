@@ -27,7 +27,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 function updateUserProfile(user) {
     document.getElementById('userName').textContent = user.full_name || user.email;
     document.getElementById('userRole').textContent = user.role;
-    document.getElementById('userAvatar').textContent = (user.full_name || user.email).charAt(0).toUpperCase();
+    const initial = (user.full_name || user.email).charAt(0).toUpperCase();
+    document.getElementById('userAvatar').textContent = initial;
+    if (document.getElementById('userInitialsDesktop')) {
+        document.getElementById('userInitialsDesktop').textContent = initial;
+    }
 }
 
 function showToast(message, type = 'success') {
@@ -41,7 +45,6 @@ function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.innerHTML = `
-        <div class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</div>
         <div class="toast-message">${message}</div>
     `;
 
@@ -49,68 +52,105 @@ function showToast(message, type = 'success') {
 
     setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(20px)';
+        toast.style.transform = 'translateY(-20px)';
         setTimeout(() => toast.remove(), 300);
-    }, 4000);
+    }, 3000);
 }
 
 function closeModal(e) {
     // Only close if clicking the actual overlay background, not elements inside it
     if (e && e.target !== e.currentTarget) return;
-    const modal = document.querySelector('.modal-overlay');
-    if (modal) modal.remove();
+    const modals = document.querySelectorAll('.modal-overlay');
+    if (modals.length > 0) {
+        modals[modals.length - 1].remove();
+    }
 }
+
+const NAV_ICONS = {
+    'dashboard': '🏠',
+    'merchant-dashboard': '🏠',
+    'users': '👥',
+    'products': '📦',
+    'audit-logs': '📜',
+    'quizzes': '📝',
+    'missions': '🎯',
+    'submissions': '✅',
+    'dosen-students': '🎓',
+    'shop': '🛍️',
+    'transfer-scan': '📸',
+    'profile': '👤'
+};
 
 function renderNavigation(role) {
     const nav = document.getElementById('sidebarNav');
+    const bottomNav = document.getElementById('mobileBottomNav');
     let items = [];
 
     if (role === 'admin') {
         items.push(
-            { label: 'Dashboard', href: '#dashboard', active: true },
-            { label: 'Data Pengguna', href: '#users' },
-            { label: 'Data Produk', href: '#products' },
-            { label: 'Log Audit', href: '#audit-logs' }
+            { label: 'Home', href: '#dashboard', active: true, target: 'dashboard' },
+            { label: 'Users', href: '#users', target: 'users' },
+            { label: 'Products', href: '#products', target: 'products' },
+            { label: 'Audit', href: '#audit-logs', target: 'audit-logs' }
         );
     } else if (role === 'dosen') {
         items.push(
-            { label: 'Dashboard', href: '#dashboard', active: true },
-            { label: 'Buat Quis', href: '#quizzes' },
-            { label: 'Buat Misi', href: '#missions' },
-            { label: 'Approval', href: '#submissions' },
-            { label: 'Data Siswa', href: '#dosen-students' }
+            { label: 'Home', href: '#dashboard', active: true, target: 'dashboard' },
+            { label: 'Kuis', href: '#quizzes', target: 'quizzes' },
+            { label: 'Misi', href: '#missions', target: 'missions' },
+            { label: 'Verif', href: '#submissions', target: 'submissions' },
+            { label: 'Siswa', href: '#dosen-students', target: 'dosen-students' }
         );
     } else if (role === 'mahasiswa') {
         items.push(
-            { label: 'Pusat Kendali', href: '#dashboard', active: true },
-            { label: 'Misi & Gamifikasi', href: '#missions' },
-            { label: 'MarketPlace', href: '#shop' },
-            { label: 'Transaksi & Pindai', href: '#transfer-scan' }
+            { label: 'Home', href: '#dashboard', active: true, target: 'dashboard' },
+            { label: 'Misi', href: '#missions', target: 'missions' },
+            { label: 'Pasar', href: '#shop', target: 'shop' },
+            { label: 'Pindai', href: '#transfer-scan', target: 'transfer-scan' }
         );
     } else if (role === 'merchant') {
         items.push(
-            { label: 'Dashboard', href: '#merchant-dashboard', active: true }
+            { label: 'Home', href: '#merchant-dashboard', active: true, target: 'merchant-dashboard' }
         );
     }
 
-    items.push({ label: 'Pengaturan', href: '#profile' });
+    items.push({ label: 'Profil', href: '#profile', target: 'profile' });
 
+    // Render Side Nav
     nav.innerHTML = items.map(item => `
-        <a href="${item.href}" class="nav-item ${item.active ? 'active' : ''}" data-target="${item.href.substring(1)}">
+        <a href="${item.href}" class="nav-item ${item.active ? 'active' : ''}" data-target="${item.target}">
+            <span style="margin-right: 12px; font-size: 1.25rem;">${NAV_ICONS[item.target] || '•'}</span>
             ${item.label}
         </a>
     `).join('');
 
-    // Add click listeners
-    nav.querySelectorAll('.nav-item').forEach(link => {
+    // Render Bottom Nav
+    if (bottomNav) {
+        // Show only first 4 items + profile
+        const bottomItems = items.length <= 5 ? items : [...items.slice(0, 4), items[items.length - 1]];
+        bottomNav.innerHTML = bottomItems.map(item => `
+            <a href="${item.href}" class="bottom-nav-item ${item.active ? 'active' : ''}" data-target="${item.target}">
+                <span class="bottom-nav-icon">${NAV_ICONS[item.target] || '•'}</span>
+                <span>${item.label}</span>
+            </a>
+        `).join('');
+    }
+
+    // Add click listeners to all nav items
+    const allLinks = document.querySelectorAll('.nav-item, .bottom-nav-item');
+    allLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            nav.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            handleNavigation(link.dataset.target, role);
+            const target = link.dataset.target;
+
+            // Update active states for both navs
+            document.querySelectorAll(`[data-target]`).forEach(l => l.classList.remove('active'));
+            document.querySelectorAll(`[data-target="${target}"]`).forEach(l => l.classList.add('active'));
+
+            handleNavigation(target, role);
 
             // Auto close sidebar on mobile
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 768 && link.classList.contains('nav-item')) {
                 toggleSidebar();
             }
         });
@@ -271,7 +311,7 @@ function renderDashboard(user) {
                 </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 2rem; margin-top: 2rem;">
+            <div class="grid-2-col" style="margin-top: 2rem;">
                 <div class="table-wrapper">
                     <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>📥 Butuh Review Segera</h3>
@@ -328,7 +368,7 @@ function renderDashboard(user) {
                     <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                     <div style="position: absolute; bottom: -30px; left: 40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                     
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 2; flex-wrap: wrap; gap: 1rem;">
+                    <div class="hero-flex" style="position: relative; z-index: 2;">
                         <div>
                             <div style="font-size: 1.1rem; opacity: 0.9; font-weight: 500;">👋 ${greeting},</div>
                             <h2 style="font-size: 2.5rem; font-weight: 800; margin: 0.2rem 0 1rem; letter-spacing: -0.02em;">${user.full_name || 'Mahasiswa'}</h2>
@@ -338,7 +378,7 @@ function renderDashboard(user) {
                                 <span style="font-size: 0.8rem; margin-left: 0.3rem; opacity: 0.8;">Emerald Pts</span>
                             </div>
                         </div>
-                        <div style="text-align: right;">
+                        <div style="text-align: right; flex-shrink: 0;">
                             <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Misi Selesai</div>
                             <div style="font-size: 2rem; font-weight: 800;" id="stats-missions-done">--</div>
                         </div>
@@ -346,7 +386,7 @@ function renderDashboard(user) {
                 </div>
 
                 <!-- MAIN GRID -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div class="grid-2-col">
                     
                     <!-- LEFT COLUMN: ACTIONS & DISCOVERY -->
                     <div style="display: flex; flex-direction: column; gap: 2rem;">
@@ -356,7 +396,7 @@ function renderDashboard(user) {
                             <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-main);">
                                 🚀 Jalan Pintas
                             </h3>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="grid-2-col" style="gap: 1rem;">
                                 <div onclick="handleNavigation('transfer-scan', 'mahasiswa')" style="background: white; padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; align-items: center; text-align: center;">
                                     <div style="width: 50px; height: 50px; background: #e0e7ff; color: #4338ca; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 0.75rem;">📸</div>
                                     <div style="font-weight: 700; color: var(--text-main);">Scan & Transfer</div>

@@ -77,54 +77,45 @@ class DosenController {
 
             tbody.innerHTML = quizzes.map(q => `
                 <tr class="fade-in-item">
-                    <td>
+                    <td data-label="Kuis">
                         <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(99, 102, 241, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
                                 💡
                             </div>
                             <div>
                                 <strong style="font-size: 1rem; color: var(--text-main);">${q.title}</strong><br>
-                                <small style="color: var(--text-muted); display: block; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                    ${q.description || 'Tidak ada instruksi yang diberikan'}
+                                <small style="color: var(--text-muted); display: block; max-width: 250px; overflow: hidden; text-overflow: ellipsis;">
+                                    ${q.description || 'Kuis Interaktif'}
                                 </small>
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <span class="badge" style="background: rgba(99, 102, 241, 0.1); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.2);">
+                    <td data-label="Soal">
+                        <span class="badge badge-info">
                             ${q.questions?.length || 0} Pertanyaan
                         </span>
                     </td>
-                    <td>
+                    <td data-label="Hadiah">
                         <div style="display: flex; align-items: center; gap: 0.4rem;">
-                            <span style="color: #fbbf24; font-size: 1.1rem;">💎</span>
+                            <span style="font-size: 1.1rem;">💎</span>
                             <span style="font-weight: 700; color: var(--text-main);">${q.points.toLocaleString()}</span>
-                            <small style="color: var(--text-muted);">pts</small>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Deadline">
                         <div style="font-size: 0.85rem;">
-                            <div style="color: var(--text-main);">${q.deadline ? new Date(q.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Tidak Ada Batas'}</div>
-                            <small style="color: var(--text-muted);">${q.deadline ? new Date(q.deadline).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : ''}</small>
+                            <div style="color: var(--text-main); font-weight: 600;">${q.deadline ? new Date(q.deadline).toLocaleDateString() : 'OPEN'}</div>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Status">
                         <span class="badge ${q.status === 'active' ? 'badge-success' : 'badge-warning'}">
-                            ${q.status.charAt(0).toUpperCase() + q.status.slice(1)}
+                            ${q.status}
                         </span>
                     </td>
-                    <td class="text-right">
+                    <td data-label="Aksi" class="text-right">
                         <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
-                            <button class="btn btn-sm" style="background: var(--primary); color: white; border-radius: 12px; font-size: 0.75rem; padding: 0.4rem 0.8rem;" 
-                                    onclick="DosenController.renderSubmissions('pending', ${q.id})" title="Lihat Pengiriman">
-                                📊 Hasil
-                            </button>
-                            <button class="btn-icon" style="background: #f1f5f9;" onclick="DosenController.showQuizModal(${q.id})" title="Sempurnakan Kuis">
-                                <span style="font-size: 0.9rem;">✏️</span>
-                            </button>
-                            <button class="btn-icon" style="background: rgba(239, 68, 68, 0.05); color: var(--error);" onclick="DosenController.deleteMission(${q.id})" title="Hapus Kuis">
-                                <span style="font-size: 0.9rem;">🗑️</span>
-                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="DosenController.renderSubmissions('pending', ${q.id})">📊</button>
+                            <button class="btn-icon" onclick="DosenController.showQuizModal(${q.id})">✏️</button>
+                            <button class="btn-icon" style="color: var(--error);" onclick="DosenController.deleteMission(${q.id})">🗑️</button>
                         </div>
                     </td>
                 </tr>
@@ -159,7 +150,7 @@ class DosenController {
                         <form id="quizForm" onsubmit="DosenController.handleQuizSubmit(event, ${id})">
                             <!-- Basic Config Card -->
                             <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary); padding: 1.5rem;">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                                <div class="grid-2-col" style="gap: 2rem;">
                                     <div>
                                         <div class="form-group">
                                             <label style="font-weight: 600; color: var(--text-main);">Judul Kuis</label>
@@ -171,7 +162,7 @@ class DosenController {
                                         </div>
                                     </div>
                                     <div>
-                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <div class="grid-2-col" style="gap: 1rem;">
                                             <div class="form-group">
                                                 <label style="font-weight: 600; color: var(--text-main);">Alokasi Poin</label>
                                                 <div style="position: relative;">
@@ -430,54 +421,45 @@ class DosenController {
 
             tbody.innerHTML = missions.map(m => `
                 <tr class="fade-in-item">
-                    <td>
+                    <td data-label="Misi">
                         <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
                                 ${m.type === 'assignment' ? '📄' : '✅'}
                             </div>
                             <div>
                                 <strong style="font-size: 1rem; color: var(--text-main);">${m.title}</strong><br>
                                 <small style="color: var(--text-muted); display: block; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                    ${m.description || 'Tidak ada detail instruksi'}
+                                    ${m.description || 'Instruksi Misi'}
                                 </small>
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success); text-transform: capitalize; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <td data-label="Tipe">
+                        <span class="badge badge-info">
                             ${m.type}
                         </span>
                     </td>
-                    <td>
+                    <td data-label="Reward">
                         <div style="display: flex; align-items: center; gap: 0.4rem;">
-                            <span style="color: #fbbf24; font-size: 1.1rem;">💎</span>
+                            <span style="font-size: 1.1rem;">💎</span>
                             <span style="font-weight: 700; color: var(--text-main);">${m.points.toLocaleString()}</span>
-                            <small style="color: var(--text-muted);">pts</small>
                         </div>
                     </td>
-                    <td>
+                    <td data-label="Target">
                         <div style="font-size: 0.85rem;">
-                            <div style="color: var(--text-main);">${m.deadline ? new Date(m.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Buka Selamanya'}</div>
-                            <small style="color: var(--text-muted);">${m.deadline ? new Date(m.deadline).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : 'Tidak Ada Kadaluwarsa'}</small>
+                            <div style="color: var(--text-main); font-weight: 600;">${m.deadline ? new Date(m.deadline).toLocaleDateString() : 'OPEN'}</div>
                         </div>
                     </td>
-                    <td>
-                        <span class="badge ${m.status === 'active' ? 'badge-success' : 'badge-warning'}" style="border-radius: 20px;">
-                            ${m.status.charAt(0).toUpperCase() + m.status.slice(1)}
+                    <td data-label="Status">
+                        <span class="badge ${m.status === 'active' ? 'badge-success' : 'badge-warning'}">
+                            ${m.status}
                         </span>
                     </td>
-                    <td class="text-right">
+                    <td data-label="Aksi" class="text-right">
                         <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
-                            <button class="btn btn-sm" style="background: var(--primary); color: white; border-radius: 12px; font-size: 0.75rem; padding: 0.4rem 0.8rem;" 
-                                    onclick="DosenController.renderSubmissions('pending', ${m.id})" title="Lihat Pengiriman">
-                                📊 Pengiriman
-                            </button>
-                            <button class="btn-icon" style="background: #f1f5f9;" onclick="DosenController.showMissionModal(${m.id})" title="Sempurnakan Tugas">
-                                <span style="font-size: 0.9rem;">✏️</span>
-                            </button>
-                            <button class="btn-icon" style="background: rgba(239, 68, 68, 0.05); color: var(--error);" onclick="DosenController.deleteMission(${m.id})" title="Hapus Tugas">
-                                <span style="font-size: 0.9rem;">🗑️</span>
-                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="DosenController.renderSubmissions('pending', ${m.id})">📊</button>
+                            <button class="btn-icon" onclick="DosenController.showMissionModal(${m.id})">✏️</button>
+                            <button class="btn-icon" style="color: var(--error);" onclick="DosenController.deleteMission(${m.id})">🗑️</button>
                         </div>
                     </td>
                 </tr>
@@ -519,7 +501,7 @@ class DosenController {
                                 <textarea name="description" placeholder="Berikan langkah-langkah yang jelas untuk penyelesaian..." style="min-height: 120px; border-radius: 10px;">${mission?.description || ''}</textarea>
                             </div>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div class="grid-2-col" style="gap: 1.5rem; margin-bottom: 1.5rem;">
                                 <div class="form-group">
                                     <label style="font-weight: 600; color: var(--text-main);">Kategori Tugas</label>
                                     <select name="type" style="border-radius: 10px; background-color: #f8fafc;">
@@ -687,37 +669,33 @@ class DosenController {
 
             tbody.innerHTML = submissions.map(s => `
                 <tr class="fade-in-item">
-                    <td>
+                    <td data-label="Kandidat">
                         <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
                                 ${s.student_name ? s.student_name.charAt(0) : 'S'}
                             </div>
                             <div>
                                 <strong style="color: var(--text-main);">${s.student_name}</strong><br>
-                                <small style="color: var(--text-muted);">${s.student_nim}</small>
+                                <small style="color: var(--text-muted); font-size: 0.7rem;">${s.student_nim}</small>
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <div style="font-weight: 600; color: var(--primary);">${s.mission_title}</div>
+                    <td data-label="Misi">
+                        <div style="font-weight: 700; color: var(--primary); font-size: 0.9rem;">${s.mission_title}</div>
                     </td>
-                    <td>
-                        <div style="font-size: 0.85rem;">
-                            <div style="color: var(--text-main);">${new Date(s.created_at).toLocaleDateString()}</div>
-                            <small style="color: var(--text-muted);">${new Date(s.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
-                        </div>
+                    <td data-label="Waktu">
+                        <div style="font-size: 0.8rem; font-weight: 600;">${new Date(s.created_at).toLocaleDateString()}</div>
                     </td>
-                    <td>
-                        <span class="badge ${s.status === 'pending' ? 'badge-warning' : (s.status === 'approved' ? 'badge-success' : 'badge-error')}" 
-                              style="text-transform: capitalize;">
+                    <td data-label="Status">
+                        <span class="badge ${s.status === 'pending' ? 'badge-warning' : (s.status === 'approved' ? 'badge-success' : 'badge-error')}">
                             ${s.status}
                         </span>
-                        ${s.status !== 'pending' ? `<span style="font-weight: 700; margin-left: 0.5rem; color: var(--text-main);">${s.score}/100</span>` : ''}
+                        ${s.status !== 'pending' ? `<span style="font-weight: 800; margin-left: 0.5rem; color: var(--text-main);">${s.score}</span>` : ''}
                     </td>
-                            <td class="text-right">
+                    <td data-label="Aksi" class="text-right">
                         ${s.status === 'pending'
-                    ? `<button class="btn btn-primary" onclick="DosenController.showReviewModal(${s.id})" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; border-radius: 20px;">Tinjau Sekarang</button>`
-                    : `<button class="btn" onclick="DosenController.showReviewModal(${s.id})" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; background: #f1f5f9; color: var(--text-muted);">Lihat Detail</button>`
+                    ? `<button class="btn btn-primary" onclick="DosenController.showReviewModal(${s.id})" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Review</button>`
+                    : `<button class="btn" onclick="DosenController.showReviewModal(${s.id})" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; background: var(--bg-main);">Detail</button>`
                 }
                     </td>
                 </tr>

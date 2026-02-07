@@ -3,43 +3,52 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Daftar - Wallet Point</title>
-    <!-- Modern System Font Stack (No External Dependencies) -->
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="auth-page">
-    <div class="login-container">
+    <div class="login-container" style="max-width: 520px; margin-top: 2rem; margin-bottom: 2rem;">
         <div class="login-header">
             <div class="logo-big">WP</div>
-            <h2>Buat Akun Baru</h2>
-            <p style="color: var(--text-muted); margin-top: -1.5rem; margin-bottom: 2rem; font-size: 0.875rem;">
-                Daftar untuk mulai mengumpulkan dan menukar poin</p>
+            <h2>Bergabunglah</h2>
+            <p
+                style="color: var(--text-muted); text-align: center; margin-bottom: 2rem; font-size: 0.95rem; font-weight: 500;">
+                Dapatkan akses ke ekosistem Wallet Point</p>
         </div>
         <form id="registerForm">
             <div id="errorMessage" class="error hidden"
-                style="margin-bottom: 1.5rem; padding: 0.75rem; background: #fee2e2; color: #991b1b; border-radius: 0.5rem; font-size: 0.875rem;">
+                style="margin-bottom: 1.5rem; padding: 1rem; background: #fee2e2; color: #991b1b; border-radius: 12px; font-size: 0.875rem; font-weight: 600; border: 1px solid #fecaca;">
             </div>
             <div id="successMessage" class="success hidden"
-                style="margin-bottom: 1.5rem; padding: 0.75rem; background: #dcfce7; color: #166534; border-radius: 0.5rem; font-size: 0.875rem;">
-            </div>
-            
-            <div class="form-group">
-                <label for="fullName">Nama Lengkap</label>
-                <input type="text" id="fullName" placeholder="Masukkan nama lengkap" required>
+                style="margin-bottom: 1.5rem; padding: 1rem; background: #dcfce7; color: #166534; border-radius: 12px; font-size: 0.875rem; font-weight: 600; border: 1px solid #bbf7d0;">
             </div>
 
-            <div class="form-group">
-                <label for="nimNip">NIM / NIP</label>
-                <input type="text" id="nimNip" placeholder="Masukkan NIM atau NIP" required>
+            <div class="grid-2-col" style="gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label for="fullName">Nama Lengkap</label>
+                    <input type="text" id="fullName" placeholder="Budi Santoso" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nimNip">NIM / NIP</label>
+                    <input type="text" id="nimNip" placeholder="12345678" required>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="email">Alamat Email</label>
                 <input type="email" id="email" placeholder="nama@email.com" required>
             </div>
-            
+
             <div class="form-group">
                 <label for="password">Kata Sandi</label>
                 <input type="password" id="password" placeholder="Minimal 6 karakter" required minlength="6">
@@ -50,9 +59,12 @@
                 <input type="password" id="confirmPassword" placeholder="Ulangi kata sandi" required minlength="6">
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block">Daftar Sekarang</button>
-            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem;">
-                Sudah punya akun? <a href="login.html" style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Masuk di sini</a>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem; padding: 1.1rem;">Daftar
+                Sekarang</button>
+            <p
+                style="text-align: center; margin-top: 2rem; font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">
+                Sudah punya akun? <a href="login.html"
+                    style="color: var(--primary); text-decoration: none; font-weight: 700;">Masuk Sekarang</a>
             </p>
         </form>
     </div>

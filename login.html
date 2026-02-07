@@ -3,9 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Masuk - Wallet Point</title>
-    <!-- Modern System Font Stack (No External Dependencies) -->
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -13,26 +19,29 @@
     <div class="login-container">
         <div class="login-header">
             <div class="logo-big">WP</div>
-            <h2>Selamat Datang Kembali</h2>
-            <p style="color: var(--text-muted); margin-top: -1.5rem; margin-bottom: 2rem; font-size: 0.875rem;">
-                Masukkan kredensial Anda untuk mengakses dashboard</p>
+            <h2>Selamat Datang</h2>
+            <p
+                style="color: var(--text-muted); text-align: center; margin-bottom: 2.5rem; font-size: 0.95rem; font-weight: 500;">
+                Silakan masuk untuk melanjutkan</p>
         </div>
         <form id="loginForm">
             <div id="errorMessage" class="error hidden"
-                style="margin-bottom: 1.5rem; padding: 0.75rem; background: #fee2e2; color: #991b1b; border-radius: 0.5rem; font-size: 0.875rem;">
+                style="margin-bottom: 1.5rem; padding: 1rem; background: #fee2e2; color: #991b1b; border-radius: 12px; font-size: 0.875rem; font-weight: 600; border: 1px solid #fecaca;">
             </div>
             <div class="form-group">
                 <label for="email">Alamat Email</label>
-                <input type="email" id="email" placeholder="nama@email.com" required>
+                <input type="email" id="email" placeholder="nama@email.com" required autocomplete="email">
             </div>
             <div class="form-group">
                 <label for="password">Kata Sandi</label>
-                <input type="password" id="password" placeholder="••••••••" required>
+                <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Masuk ke Dashboard</button>
-            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem;">
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem; padding: 1.1rem;">Masuk
+                Sekarang</button>
+            <p
+                style="text-align: center; margin-top: 2rem; font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">
                 Belum punya akun? <a href="register.html"
-                    style="color: var(--primary-color); text-decoration: none; font-weight: 500;">Daftar di sini</a>
+                    style="color: var(--primary); text-decoration: none; font-weight: 700;">Buat Akun Baru</a>
             </p>
         </form>
     </div>

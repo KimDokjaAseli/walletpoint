@@ -12,19 +12,18 @@ class MahasiswaController {
         const content = document.getElementById('mainContent');
         content.innerHTML = `
             <div class="fade-in">
-                <div class="page-header" style="margin-bottom: 2rem;">
-                    <h2 style="font-weight: 700; color: var(--text-main);">Pusat Misi</h2>
-                    <p style="color: var(--text-muted);">Jelajahi misi dan kuis untuk mendapatkan Poin Berlian</p>
+                <div style="margin-bottom: 1.5rem;">
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Dapatkan Poin Berlian dengan menyelesaikan tantangan di bawah ini.</p>
                 </div>
 
-                <div class="filter-tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem; background: rgba(255,255,255,0.5); padding: 0.5rem; border-radius: 12px; width: fit-content; border: 1px solid var(--border);">
-                    <button class="tab-btn active" onclick="MahasiswaController.filterMissions('all', this)" style="padding: 0.5rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: white; box-shadow: var(--shadow-sm);">Semua Item</button>
-                    <button class="tab-btn" onclick="MahasiswaController.filterMissions('quiz', this)" style="padding: 0.5rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent;">Kuis</button>
-                    <button class="tab-btn" onclick="MahasiswaController.filterMissions('task', this)" style="padding: 0.5rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent;">Tugas</button>
-                    <button class="tab-btn" onclick="MahasiswaController.filterMissions('history', this)" style="padding: 0.5rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent;">Riwayat & Status</button>
+                <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm);">
+                    <button class="tab-btn active" onclick="MahasiswaController.filterMissions('all', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; background: var(--primary); color: white; white-space: nowrap; transition: 0.3s;">Semua Item</button>
+                    <button class="tab-btn" onclick="MahasiswaController.filterMissions('quiz', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent; color: var(--text-muted); white-space: nowrap; transition: 0.3s;">Kuis</button>
+                    <button class="tab-btn" onclick="MahasiswaController.filterMissions('task', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent; color: var(--text-muted); white-space: nowrap; transition: 0.3s;">Tugas</button>
+                    <button class="tab-btn" onclick="MahasiswaController.filterMissions('history', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent; color: var(--text-muted); white-space: nowrap; transition: 0.3s;">Riwayat & Status</button>
                 </div>
 
-                <div id="missionsGrid" class="stats-grid" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
+                <div class="card-grid" id="missionsGrid">
                     <div class="text-center" style="grid-column: 1/-1; padding: 4rem;">Memuat peluang menarik...</div>
                 </div>
             </div>
@@ -41,8 +40,8 @@ class MahasiswaController {
                 API.getSubmissions()
             ]);
 
-            const missions = resMissions.data.missions || [];
-            const submissions = resSubs.data.submissions || [];
+            const missions = (resMissions.data?.missions || resMissions.missions || []);
+            const submissions = (resSubs.data?.submissions || resSubs.submissions || []);
 
             // Map submissions by mission_id for easy lookup
             const subMap = {};
@@ -99,28 +98,28 @@ class MahasiswaController {
 
                 if (isPending) {
                     statusBadge = '<span class="badge badge-warning">Sedang Ditinjau</span>';
-                    actionBtn = `<button class="btn" disabled style="width:100%; padding:1rem; border-radius:0; background:#f1f5f9; color:var(--text-muted);">Menunggu Review ⏳</button>`;
+                    actionBtn = `<button class="btn btn-block" disabled style="background:#f1f5f9; color:var(--text-muted);">Menunggu Review ⏳</button>`;
                 } else if (isRejected) {
                     statusBadge = '<span class="badge badge-error">Perlu Perbaikan</span>';
                     actionBtn = `
-                        <button class="btn btn-primary" style="border-radius: 0; width: 100%; padding: 1rem; background: var(--error); border: none;" 
+                        <button class="btn btn-primary btn-block" style="background: var(--error);" 
                                 onclick="${m.type === 'quiz' ? `MahasiswaController.takeQuiz(${m.id})` : `MahasiswaController.showSubmitModal(${m.id})`}">
                             Perbaiki & Kirim Ulang 🔄
                         </button>`;
                 } else if (isApproved) {
                     statusBadge = '<span class="badge badge-success">Selesai ✅</span>';
-                    actionBtn = `<button class="btn" disabled style="width:100%; padding:1rem; border-radius:0; background:#f1f5f9; color:var(--success); font-weight:700;">Lulus! +${sub.score || m.points} Pts</button>`;
+                    actionBtn = `<button class="btn btn-block" disabled style="background:#f1f5f9; color:var(--success); font-weight:700;">Lulus! +${sub.score || m.points} Pts</button>`;
                 } else {
                     actionBtn = `
-                        <button class="btn btn-primary" style="border-radius: 0; width: 100%; padding: 1rem; background: ${m.type === 'quiz' ? 'linear-gradient(to right, #6366f1, #a855f7)' : 'var(--primary)'}; border: none;" 
+                        <button class="btn btn-primary btn-block" style="background: ${m.type === 'quiz' ? 'linear-gradient(to right, #6366f1, #a855f7)' : 'var(--primary)'};" 
                                 onclick="${m.type === 'quiz' ? `MahasiswaController.takeQuiz(${m.id})` : `MahasiswaController.showSubmitModal(${m.id})`}">
                             ${m.type === 'quiz' ? 'Ikuti Kuis Sekarang 🚀' : 'Mulai Misi ✨'}
                         </button>`;
                 }
 
                 return `
-                <div class="card fade-in-item" style="display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; border: 1px solid var(--border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default; position: relative;">
-                    ${m.type === 'quiz' ? '<div style="position: absolute; top: 12px; right: 12px; background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(99, 102, 241, 0.2);">KUIS CEPAT</div>' : ''}
+                <div class="card fade-in-item" style="display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; padding: 0;">
+                    ${m.type === 'quiz' ? '<div style="position: absolute; top: 12px; right: 12px; background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(99, 102, 241, 0.2); z-index: 1;">KUIS</div>' : ''}
                     
                     <div style="padding: 1.5rem;">
                         <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
@@ -135,33 +134,34 @@ class MahasiswaController {
 
                         ${statusBadge ? `<div style="margin-bottom:1rem;">${statusBadge}</div>` : ''}
 
-                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
                             ${m.description || 'Selesaikan misi ini untuk mendapatkan pengakuan dan poin.'}
                         </p>
                         
                         ${isRejected && sub.review_note ? `
-                            <div style="background:rgba(239, 68, 68, 0.05); color:var(--error); padding:0.75rem; border-radius:8px; font-size:0.85rem; margin-bottom:1rem; border:1px solid rgba(239, 68, 68, 0.2);">
-                                <strong>Feedback Dosen:</strong><br>
-                                "${sub.review_note}"
+                            <div style="background:rgba(239, 68, 68, 0.05); color:var(--error); padding:0.75rem; border-radius:12px; font-size:0.85rem; margin-bottom:1rem; border:1px solid rgba(239, 68, 68, 0.1);">
+                                <strong>Feedback:</strong> ${sub.review_note}
                             </div>
                         ` : ''}
 
-                        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border);">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
                                 <span style="font-size: 1.1rem;">💎</span>
                                 <span style="font-weight: 800; color: var(--text-main); font-size: 1.1rem;">${m.points}</span>
                                 <span style="color: var(--text-muted); font-size: 0.8rem;">pts</span>
                             </div>
                             <div style="text-align: right;">
-                                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">TENGGAT WAKTU</div>
-                                <div style="font-size: 0.8rem; font-weight: 700; color: ${m.deadline ? 'var(--text-main)' : 'var(--success)'};">
-                                    ${m.deadline ? new Date(m.deadline).toLocaleDateString() : 'BUKA'}
+                                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">DEADLINE</div>
+                                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-main);">
+                                    ${m.deadline ? new Date(m.deadline).toLocaleDateString() : 'OPEN'}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    ${actionBtn}
+                    <div style="padding: 1rem; padding-top: 0;">
+                        ${actionBtn}
+                    </div>
                 </div>
             `;
             }).join('');
@@ -176,11 +176,13 @@ class MahasiswaController {
         document.querySelectorAll('.tab-btn').forEach(b => {
             b.classList.remove('active');
             b.style.background = 'transparent';
+            b.style.color = 'var(--text-muted)';
             b.style.boxShadow = 'none';
         });
         btn.classList.add('active');
-        btn.style.background = 'white';
-        btn.style.boxShadow = 'var(--shadow-sm)';
+        btn.style.background = 'var(--primary)';
+        btn.style.color = 'white';
+        btn.style.boxShadow = 'var(--shadow-md)';
         this.loadMissions(type);
     }
 
@@ -320,12 +322,12 @@ class MahasiswaController {
 
             const modalHtml = `
                 <div class="modal-overlay" onclick="closeModal(event)">
-                    <div class="modal-card" style="max-width: 600px; border-radius: var(--radius-xl); overflow: hidden;">
+                    <div class="modal-card" style="max-width: 600px;">
                         <div class="modal-head" style="background: var(--primary); color: white;">
-                            <h3>🚀 Mulai Pengiriman</h3>
+                            <h3 style="margin:0;">🚀 Mulai Pengiriman</h3>
                             <button class="btn-icon" onclick="closeModal()" style="color:white;">×</button>
                         </div>
-                        <div class="modal-body" style="padding: 2rem;">
+                        <div class="modal-body">
                             <div style="margin-bottom: 2rem; border-left: 3px solid var(--primary); padding-left: 1rem;">
                                 <h4 style="margin:0;">${mission.title}</h4>
                                 <p style="margin: 0.5rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;">${mission.description || 'Tidak ada instruksi khusus yang diberikan.'}</p>
@@ -336,7 +338,7 @@ class MahasiswaController {
                                     <label style="font-weight: 600;">Laporan / Jawaban Teks</label>
                                     <textarea name="content" required placeholder="Jelaskan hasil pekerjaan Anda di sini..." style="min-height: 120px; border-radius: 12px; border: 1px solid var(--border); padding: 1rem;"></textarea>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" style="margin-bottom:0;">
                                     <label style="font-weight: 600;">Unggah Bukti File (Opsional)</label>
                                     <div style="border: 2px dashed var(--border); padding: 2rem; border-radius: 12px; text-align: center; background: #fafafa; position: relative; cursor: pointer;" 
                                          onclick="this.querySelector('input').click()">
@@ -346,11 +348,13 @@ class MahasiswaController {
                                         <small style="color: #94a3b8; display: block; margin-top: 0.5rem;">Maksimal 10MB (PDF, JPG, PNG)</small>
                                     </div>
                                 </div>
-                                <div class="form-actions" style="margin-top: 2.5rem; display: flex; gap: 1rem;">
-                                    <button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex:1; border-radius: 12px;">Batal</button>
-                                    <button type="submit" class="btn btn-primary" style="flex:2; border-radius: 12px; font-weight: 700;">🚀 Kirim Sekarang</button>
-                                </div>
                             </form>
+                        </div>
+                        <div class="modal-foot">
+                            <div class="form-actions" style="display: flex; gap: 1rem;">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex:1;">Batal</button>
+                                <button type="submit" form="missionSubmitForm" class="btn btn-primary" style="flex:2;">🚀 Kirim Sekarang</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -403,7 +407,7 @@ class MahasiswaController {
                 </div>
 
                 <div id="shopContent">
-                    <div id="shopGrid" class="stats-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                    <div id="shopGrid" class="card-grid">
                         <div class="text-center" style="grid-column: 1/-1; padding: 4rem;">Memuat Data Toko...</div>
                     </div>
                 </div>
@@ -434,7 +438,7 @@ class MahasiswaController {
                 API.getTransactions(user.id) // Still fetch txns to check stock or limits if needed, but we don't hide purchased items anymore unless logic dictates
             ]);
 
-            let products = productsRes.data.products || [];
+            let products = (productsRes.data?.products || productsRes.products || []);
             // We can keep the logic to show purchased items as disabled or allow multiple purchases.
             // Requirement didn't specify to remove "Purchase: " filtering, but if inventory is gone, maybe we allow re-purchase?
             // "Fix the bug where product stock does not decrease after purchase" - this implies normal stock behavior.
@@ -504,7 +508,7 @@ class MahasiswaController {
     static async updateCartCount() {
         try {
             const res = await API.request('/mahasiswa/marketplace/cart');
-            const items = res.data.items || [];
+            const items = (res.data?.items || res.items || []);
             const badge = document.getElementById('cartCountBadge');
             if (badge) {
                 badge.textContent = items.length;
@@ -526,14 +530,14 @@ class MahasiswaController {
     static async showCart() {
         try {
             const res = await API.request('/mahasiswa/marketplace/cart');
-            const items = res.data.items || [];
+            const items = (res.data?.items || res.items || []);
 
             const modalHtml = `
-                <div class="modal-overlay" id="cartModal">
+                <div class="modal-overlay" id="cartModal" onclick="closeModal(event)">
                     <div class="modal-card" style="max-width: 600px; height: 80vh; display: flex; flex-direction: column;">
                         <div class="modal-head">
                             <h3>🛒 Keranjang Belanja</h3>
-                            <button class="btn-icon" onclick="document.getElementById('cartModal').remove()">×</button>
+                            <button class="btn-icon" onclick="closeModal()">×</button>
                         </div>
                         <div class="modal-body" style="flex:1; overflow-y:auto; padding: 1.5rem;">
                             ${items.length === 0 ? '<div style="text-align:center; padding:3rem; color:var(--text-muted);"><div style="font-size:3rem;">🛒</div>Keranjang kosong</div>' :
@@ -554,9 +558,9 @@ class MahasiswaController {
                         <div class="modal-foot" style="border-top:1px solid var(--border); padding:1.5rem;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:1rem; font-size:1.1rem; font-weight:700;">
                                 <span>Total</span>
-                                <span>💎 ${items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</span>
+                                <span>💎 ${(items || []).reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}</span>
                             </div>
-                            <button class="btn btn-primary" style="width:100%; padding:1rem;" onclick="MahasiswaController.checkoutCart()" ${items.length === 0 ? 'disabled' : ''}>Checkout Sekarang</button>
+                            <button class="btn btn-primary" style="width:100%; padding:1rem;" onclick="MahasiswaController.checkoutCart()" ${(!items || items.length === 0) ? 'disabled' : ''}>Checkout Sekarang</button>
                         </div>
                     </div>
                 </div>
@@ -581,23 +585,33 @@ class MahasiswaController {
     static async checkoutCart() {
         // Implement Cart Checkout with PIN
         const res = await API.request('/mahasiswa/marketplace/cart');
-        const items = res.data.items || [];
+        const items = (res.data?.items || res.items || []);
         const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
         // Show PIN modal specifically for Cart Checkout
         const modalHtml = `
-            <div class="modal-overlay" id="cartCheckoutModal">
-                <div class="modal-card" style="max-width: 400px; padding: 2rem;">
-                     <h3 style="text-align:center; margin-bottom:1rem;">Konfirmasi Pembayaran</h3>
-                     <p style="text-align:center; margin-bottom:2rem; color:var(--text-muted);">Total: <strong>💎 ${total.toLocaleString()}</strong></p>
-                     
-                     <form onsubmit="MahasiswaController.processCartCheckout(event)">
-                        <div class="form-group">
-                            <label>Masukkan PIN</label>
-                            <input type="password" name="pin" required maxlength="6" pattern="[0-9]{6}" style="text-align:center; letter-spacing:0.5em; font-size:1.5rem; padding:0.5rem;">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:1rem;">Bayar</button>
-                     </form>
+            <div class="modal-overlay" id="cartCheckoutModal" onclick="closeModal(event)">
+                <div class="modal-card" style="max-width: 400px;">
+                    <div class="modal-head">
+                        <h3 style="margin:0;">🔐 Konfirmasi Bayar</h3>
+                        <button class="btn-icon" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                         <div style="text-align:center; margin-bottom:1.5rem;">
+                            <p style="color:var(--text-muted);">Total Pembayaran</p>
+                            <h2 style="color:var(--primary); font-weight:800;">💎 ${total.toLocaleString()}</h2>
+                         </div>
+                         
+                         <form id="cartPayForm" onsubmit="MahasiswaController.processCartCheckout(event)">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label style="text-align:center; display:block;">Masukkan PIN Keamanan</label>
+                                <input type="password" name="pin" required maxlength="6" pattern="[0-9]{6}" inputmode="numeric" style="text-align:center; letter-spacing:0.5em; font-size:1.5rem; padding:0.8rem; border-radius:12px; border:2px solid var(--border);">
+                            </div>
+                         </form>
+                    </div>
+                    <div class="modal-foot">
+                        <button type="submit" form="cartPayForm" class="btn btn-primary btn-block" style="padding:1.1rem; border-radius:14px; font-weight:800;">Bayar Sekarang 🚀</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -642,9 +656,6 @@ class MahasiswaController {
                         <h2 style="font-weight: 700; color: var(--text-main);">Dompet Saya</h2>
                         <p style="color: var(--text-muted);">Catatan kriptografi dari semua perolehan dan penukaran poin Anda</p>
                     </div>
-                    <button class="btn btn-primary" onclick="MahasiswaController.syncExternalPoints()" style="padding: 0.8rem 1.5rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; background: linear-gradient(to right, #10b981, #3b82f6); border: none;">
-                        <span>🔄</span> Sinkronisasi Poin Luar
-                    </button>
                 </div>
 
                 <div class="table-wrapper">
@@ -677,12 +688,12 @@ class MahasiswaController {
 
             tbody.innerHTML = txns.map(t => {
                 const typeMap = {
-                    'transfer_in': 'Transfer Masuk 📥',
-                    'transfer_out': 'Transfer Keluar 📤',
-                    'marketplace': 'Belanja Marketplace 🛒',
-                    'reward': 'Reward Misi 🎁',
+                    'transfer_in': 'Masuk 📥',
+                    'transfer_out': 'Keluar 📤',
+                    'marketplace': 'Belanja 🛒',
+                    'reward': 'Reward 🎁',
                     'topup': 'Top Up 💎',
-                    'adjustment': 'Penyesuaian Admin ⚖️',
+                    'adjustment': 'Admin ⚖️',
                     'penalty': 'Sanksi ⚠️'
                 };
                 const friendlyType = typeMap[t.type] || t.type.replace('_', ' ').toUpperCase();
@@ -690,18 +701,18 @@ class MahasiswaController {
 
                 return `
                 <tr>
-                    <td><code style="font-size: 0.75rem; color: var(--text-muted);">#TX-${t.id}</code></td>
-                    <td>
-                        <div style="font-weight: 600; color: var(--text-main);">${t.description}</div>
-                        <span class="badge" style="font-size: 0.7rem; background: #f1f5f9; color: var(--text-muted); padding: 2px 6px;">${friendlyType}</span>
+                    <td data-label="ID"><code style="font-size: 0.75rem; color: var(--text-muted);">#TX-${t.id}</code></td>
+                    <td data-label="Detail">
+                        <div style="font-weight: 700; color: var(--text-main);">${t.description}</div>
+                        <span class="badge" style="background: var(--bg-main); color: var(--text-muted); padding: 2px 6px; font-size: 0.7rem;">${friendlyType}</span>
                     </td>
-                    <td>
-                        <span style="font-weight: 700; color: ${isPositive ? 'var(--success)' : 'var(--error)'};">
-                            ${isPositive ? '+' : '-'}${t.amount.toLocaleString()} Pts
+                    <td data-label="Jumlah">
+                        <span style="font-weight: 800; color: ${isPositive ? 'var(--success)' : 'var(--error)'};">
+                            ${isPositive ? '+' : '-'}${t.amount.toLocaleString()}
                         </span>
                     </td>
-                    <td style="font-weight: 600; color: var(--text-main);">${t.balance_after?.toLocaleString() || '-'}</td>
-                    <td><small>${new Date(t.created_at).toLocaleString('id-ID')}</small></td>
+                    <td data-label="Saldo" style="font-weight: 700; color: var(--text-main);">${t.balance_after?.toLocaleString() || '-'}</td>
+                    <td data-label="Waktu"><small>${new Date(t.created_at).toLocaleDateString()} ${new Date(t.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small></td>
                 </tr>
             `}).join('');
         } catch (e) {
@@ -1393,64 +1404,71 @@ class MahasiswaController {
     static showCheckoutForm(product) {
         const user = JSON.parse(localStorage.getItem('user'));
         const modalHtml = `
-            <div class="modal-overlay" id="checkoutModal">
-                <div class="modal-card" style="max-width: 500px; border-radius: 28px; padding: 2rem; box-shadow: var(--shadow-lg);">
-                    <div class="modal-head" style="margin-bottom: 1.5rem; text-align: left;">
-                        <h3 style="font-weight: 800; color: var(--text-main); margin: 0;">📋 Detail Pembayaran</h3>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Lengkapi data untuk memproses pesanan Anda.</p>
+            <div class="modal-overlay" id="checkoutModal" onclick="closeModal(event)">
+                <div class="modal-card">
+                    <div class="modal-head">
+                        <div>
+                            <h3 style="font-weight: 800; color: var(--text-main); margin: 0;">📋 Detail Pembayaran</h3>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Lengkapi data untuk memproses pesanan Anda.</p>
+                        </div>
+                        <button class="btn-icon" onclick="closeModal()">×</button>
                     </div>
                     
-                    <div style="background: var(--bg-main); padding: 1.25rem; border-radius: 20px; margin-bottom: 2rem; border: 1px dashed var(--border);">
-                        <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
-                            <span style="color: var(--text-muted); font-size: 0.9rem;">Produk:</span>
-                            <span style="font-weight: 700; color: var(--text-main);">${product.name}</span>
+                    <div class="modal-body">
+                        <div style="background: var(--bg-main); padding: 1.25rem; border-radius: 20px; margin-bottom: 2rem; border: 1px dashed var(--border);">
+                            <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+                                <span style="color: var(--text-muted); font-size: 0.9rem;">Produk:</span>
+                                <span style="font-weight: 700; color: var(--text-main);">${product.name}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                                <span style="color: var(--text-muted); font-size: 0.9rem;">Total Harga:</span>
+                                <span style="font-weight: 900; color: var(--primary); font-size: 1.2rem;">💎 ${product.price.toLocaleString()} Pts</span>
+                            </div>
                         </div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <span style="color: var(--text-muted); font-size: 0.9rem;">Total Harga:</span>
-                            <span style="font-weight: 900; color: var(--primary); font-size: 1.2rem;">💎 ${product.price.toLocaleString()} Pts</span>
-                        </div>
+
+                        <form id="checkoutForm" onsubmit="MahasiswaController.handleFastCheckout(event, ${product.id}, '${product.name}', ${product.price}, ${product.created_by || 0})">
+                            <div class="grid-2-col" style="gap: 1rem; margin-bottom: 1.25rem;">
+                                <div class="form-group">
+                                    <label style="font-weight: 600; font-size: 0.85rem;">Nama Lengkap</label>
+                                    <input type="text" name="student_name" value="${user.full_name || ''}" required style="padding: 0.75rem; border-radius: 12px;">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-weight: 600; font-size: 0.85rem;">NPM / NIM</label>
+                                    <input type="text" name="student_npm" value="${user.nim_nip || ''}" required style="padding: 0.75rem; border-radius: 12px;">
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 2rem; text-align: left;">
+                                <label style="font-weight: 700; margin-bottom: 1rem; display: block; font-size: 0.9rem;">Pilih Metode Pembayaran</label>
+                                <div class="grid-2-col" style="gap: 1rem; margin-bottom: 1.5rem;">
+                                    <label style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: 0.3s;" class="pay-method-label">
+                                        <input type="radio" name="payment_method" value="wallet" checked style="display: none;">
+                                        <span style="font-size: 1.5rem;">🪙</span>
+                                        <span style="font-weight: 700; font-size: 0.85rem;">Saldo Wallet</span>
+                                    </label>
+                                    <label style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: 0.3s;" class="pay-method-label">
+                                        <input type="radio" name="payment_method" value="qr" style="display: none;">
+                                        <span style="font-size: 1.5rem;">📸</span>
+                                        <span style="font-weight: 700; font-size: 0.85rem;">Kode QR</span>
+                                    </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label style="font-weight: 600; font-size: 0.85rem;">PIN Keamanan</label>
+                                    <input type="password" name="pin" required placeholder="PIN 6-Digit" pattern="[0-9]{6}" maxlength="6" inputmode="numeric" style="padding: 0.75rem; border-radius: 12px; width: 100%; box-sizing: border-box; border: 2px solid #e2e8f0;">
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
-                    <form id="checkoutForm" onsubmit="MahasiswaController.handleFastCheckout(event, ${product.id}, '${product.name}', ${product.price}, ${product.created_by || 0})">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; text-align: left;">
-                            <div class="form-group">
-                                <label style="font-weight: 600; font-size: 0.85rem;">Nama Lengkap</label>
-                                <input type="text" name="student_name" value="${user.full_name || ''}" required style="padding: 0.75rem; border-radius: 12px;">
-                            </div>
-                            <div class="form-group">
-                                <label style="font-weight: 600; font-size: 0.85rem;">NPM / NIM</label>
-                                <input type="text" name="student_npm" value="${user.nim_nip || ''}" required style="padding: 0.75rem; border-radius: 12px;">
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 2rem; text-align: left;">
-                            <label style="font-weight: 700; margin-bottom: 1rem; display: block; font-size: 0.9rem;">Pilih Metode Pembayaran</label>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                                <label style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: 0.3s;" class="pay-method-label">
-                                    <input type="radio" name="payment_method" value="wallet" checked style="display: none;">
-                                    <span style="font-size: 1.5rem;">🪙</span>
-                                    <span style="font-weight: 700; font-size: 0.85rem;">Saldo Wallet</span>
-                                </label>
-                                <label style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; transition: 0.3s;" class="pay-method-label">
-                                    <input type="radio" name="payment_method" value="qr" style="display: none;">
-                                    <span style="font-size: 1.5rem;">📸</span>
-                                    <span style="font-weight: 700; font-size: 0.85rem;">Kode QR</span>
-                                </label>
-                            </div>
-
-                            <div class="form-group">
-                                <label style="font-weight: 600; font-size: 0.85rem;">PIN Keamanan</label>
-                                <input type="password" name="pin" required placeholder="PIN 6-Digit" pattern="[0-9]{6}" maxlength="6" inputmode="numeric" style="padding: 0.75rem; border-radius: 12px; width: 100%; box-sizing: border-box; border: 2px solid #e2e8f0;">
-                            </div>
-                        </div>
-
+                    <div class="modal-foot">
                         <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem;">
-                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('checkoutModal').remove()" style="padding: 1rem; border-radius: 14px; font-weight: 600;">Batal</button>
-                            <button type="submit" class="btn btn-primary" id="fastPayBtn" style="padding: 1rem; border-radius: 14px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a855f7); border: none; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal()" style="padding: 1rem; border-radius: 14px; font-weight: 600;">Batal</button>
+                            <button type="submit" form="checkoutForm" class="btn btn-primary" id="fastPayBtn" style="padding: 1rem; border-radius: 14px; font-weight: 800; background: linear-gradient(135deg, #6366f1, #a855f7); border: none; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">
                                 Konfirmasi Pembayaran 🚀
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
             <style>
@@ -1460,6 +1478,7 @@ class MahasiswaController {
                     color: var(--primary) !important;
                 }
             </style>
+
         `;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
@@ -1567,30 +1586,35 @@ class MahasiswaController {
 
     static generateItemQR(id, name, price) {
         const modalHtml = `
-            <div class="modal-overlay" id="qrItemModal">
-                <div class="modal-card" style="max-width: 450px; text-align: center; padding: 2.5rem; border-radius: 24px; box-shadow: var(--shadow-lg);">
-                    <h3 style="margin-bottom: 0.5rem; font-weight: 800; color: var(--text-main);">Opsi Pembayaran Produk</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Pilih metode penyelesaian transaksi Anda</p>
-                    
-                    <div id="product-qr-display" style="display: flex; justify-content: center; margin-bottom: 2rem; background: white; padding: 1rem; border-radius: 16px; border: 2px solid var(--primary-light);"></div>
-                    
-                    <div style="background: #f8fafc; padding: 1.25rem; border-radius: 16px; margin-bottom: 2rem; border: 1px solid var(--border);">
-                        <div style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">${name}</div>
-                        <div style="color: var(--primary); font-weight: 800; font-size: 1.3rem;">💎 ${price.toLocaleString()} Pts</div>
+            <div class="modal-overlay" id="qrItemModal" onclick="closeModal(event)">
+                <div class="modal-card" style="max-width: 450px;">
+                    <div class="modal-head">
+                        <h3 style="font-weight: 800; color: var(--text-main); margin: 0;">📸 Kode QR Produk</h3>
+                        <button class="btn-icon" onclick="closeModal()">×</button>
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                        <button class="btn btn-primary" id="directPayBtn" onclick="MahasiswaController.processDirectFromQR(${id}, '${name}', ${price})" style="padding: 1rem; border-radius: 12px; font-weight: 800; background: linear-gradient(to right, #6366f1, #a855f7); border: none; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
-                            ⚡ Bayar Instan (Poin)
-                        </button>
+                    <div class="modal-body" style="text-align: center;">
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Pilih metode penyelesaian transaksi Anda</p>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                             <button class="btn btn-secondary" onclick="MahasiswaController.downloadQR('product-qr-display', '${name}')" style="padding: 0.8rem; border-radius: 12px; font-weight: 700; background: white; border: 2px solid #e2e8f0; color: var(--text-muted);">
-                                💾 Simpan QR
-                             </button>
-                             <button class="btn btn-secondary" onclick="document.getElementById('qrItemModal').remove()" style="padding: 0.8rem; border-radius: 12px; font-weight: 600; background: #f1f5f9; border: none; color: var(--text-muted);">
-                                Batal
-                             </button>
+                        <div id="product-qr-display" style="display: flex; justify-content: center; margin-bottom: 2rem; background: white; padding: 1rem; border-radius: 16px; border: 2px solid var(--primary-light);"></div>
+                        
+                        <div style="background: #f8fafc; padding: 1.25rem; border-radius: 16px; margin-bottom: 2rem; border: 1px solid var(--border);">
+                            <div style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">${name}</div>
+                            <div style="color: var(--primary); font-weight: 800; font-size: 1.3rem;">💎 ${price.toLocaleString()} Pts</div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                            <button class="btn btn-primary" id="directPayBtn" onclick="MahasiswaController.processDirectFromQR(${id}, '${name}', ${price})" style="padding: 1rem; border-radius: 12px;">
+                                ⚡ Bayar Instan (Poin)
+                            </button>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <button class="btn btn-secondary" onclick="MahasiswaController.downloadQR('product-qr-display', '${name}')" style="padding: 0.8rem; border-radius: 12px;">
+                                    💾 Simpan
+                                </button>
+                                <button class="btn btn-secondary" onclick="closeModal()" style="padding: 0.8rem; border-radius: 12px; background: #f1f5f9; border: none;">
+                                    Batal
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1639,19 +1663,21 @@ class MahasiswaController {
     static showSuccessNotification(name, price) {
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-card fade-in" style="max-width: 400px; text-align: center; padding: 3rem;">
-                    <div style="width: 80px; height: 80px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 0 auto 2rem; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);">
-                        ✓
+                <div class="modal-card" style="max-width: 400px; text-align: center;">
+                    <div class="modal-body" style="padding: 3rem;">
+                        <div style="width: 80px; height: 80px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 0 auto 2rem; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);">
+                            ✓
+                        </div>
+                        <h2 style="margin-bottom: 1rem; font-weight: 800;">Transaksi Berhasil!</h2>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem;">Anda telah menukarkan <strong>${name}</strong> seharga <strong>${price.toLocaleString()} Pts</strong>.</p>
+                        <button class="btn btn-primary btn-block" onclick="MahasiswaController.renderLedger(); closeModal();">
+                            Lihat Buku Kas 📜
+                        </button>
                     </div>
-                    <h2 style="margin-bottom: 1rem;">Pembayaran Berhasil!</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Anda telah menukarkan <strong>${name}</strong> seharga <strong>${price.toLocaleString()} Poin</strong>.</p>
-                    <button class="btn btn-primary" onclick="MahasiswaController.renderLedger(); closeModal();" style="width: 100%; border-radius: 12px; padding: 1rem; font-weight: 700;">
-                        Lihat Buku Kas
-                    </button>
                 </div>
             </div>
         `;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
-        loadStudentStats();
+        if (typeof loadStudentStats === 'function') loadStudentStats();
     }
 }

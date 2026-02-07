@@ -32,7 +32,7 @@ class AdminController {
                         <h4 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
                             📊 Aliran Poin Hari Ini (Real-time)
                         </h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div class="grid-2-col">
                             <div style="padding: 2.5rem; background: rgba(16, 185, 129, 0.05); border-radius: 20px; border: 1px dashed var(--success); text-align: center;">
                                 <small style="color: var(--success); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Total Kredit (+)</small>
                                 <div id="stats-today-credits" style="font-size: 3rem; font-weight: 800; color: var(--success); margin-top: 0.5rem;">--</div>
@@ -138,10 +138,10 @@ class AdminController {
 
             tbody.innerHTML = txns.map(t => `
                 <tr>
-                    <td><small>${new Date(t.created_at).toLocaleTimeString()}</small></td>
-                    <td><strong>${t.user_name || 'System'}</strong></td>
-                    <td><span class="badge" style="background:#f1f5f9; color:var(--text-muted); font-size:0.7rem; font-weight:600;">${(t.type || 'N/A').toUpperCase()}</span></td>
-                    <td style="font-weight: 800; color: ${t.direction === 'credit' ? 'var(--success)' : 'var(--error)'}">
+                    <td data-label="Waktu"><small>${new Date(t.created_at).toLocaleTimeString()}</small></td>
+                    <td data-label="User"><strong>${t.user_name || 'System'}</strong></td>
+                    <td data-label="Tipe"><span class="badge" style="background:var(--bg-main); color:var(--text-muted); font-size:0.7rem; font-weight:700;">${(t.type || 'N/A').toUpperCase()}</span></td>
+                    <td data-label="Jumlah" style="font-weight: 800; color: ${t.direction === 'credit' ? 'var(--success)' : 'var(--error)'}">
                         ${t.direction === 'credit' ? '↑' : '↓'} ${(t.amount || 0).toLocaleString()}
                     </td>
                 </tr>
@@ -217,12 +217,12 @@ class AdminController {
 
             tbody.innerHTML = users.map(user => `
                 <tr>
-                    <td><strong>${user.full_name}</strong></td>
-                    <td>${user.email}</td>
-                    <td><code>${user.nim_nip}</code></td>
-                    <td><span class="badge badge-info">${user.role}</span></td>
-                    <td><span class="badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">${user.status}</span></td>
-                    <td>
+                    <td data-label="Nama"><strong>${user.full_name}</strong></td>
+                    <td data-label="Email">${user.email}</td>
+                    <td data-label="NIM/NIP"><code>${user.nim_nip}</code></td>
+                    <td data-label="Peran"><span class="badge badge-info">${user.role}</span></td>
+                    <td data-label="Status"><span class="badge ${user.status === 'active' ? 'badge-success' : 'badge-warning'}">${user.status}</span></td>
+                    <td data-label="Aksi" class="text-right">
                         <button class="btn-icon" onclick="AdminController.showEditUserModal(${user.id})" title="Edit Pengguna">✏️</button>
                         <button class="btn-icon" onclick="AdminController.resetPassword(${user.id})" title="Reset Password">🔑</button>
                         ${user.status === 'active'
@@ -265,15 +265,15 @@ class AdminController {
 
             tbody.innerHTML = wallets.map(w => `
                 <tr>
-                    <td>
+                    <td data-label="Akun">
                         <strong>${w.full_name}</strong><br>
                         <small style="color: var(--text-muted)">${w.email}</small>
                     </td>
-                    <td><span class="badge badge-info">${w.role}</span></td>
-                    <td style="font-size: 1.1em; font-weight: 800; color: var(--primary)">${w.balance.toLocaleString()} pts</td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" onclick="AdminController.showAdjustModal(${w.wallet_id}, '${w.full_name}')" style="font-size: 0.7rem;">Sesuaikan ⚖️</button>
-                        <button class="btn btn-sm" style="background: #fee2e2; color: #991b1b; font-size: 0.7rem;" onclick="AdminController.showResetModal(${w.wallet_id}, '${w.full_name}')">Reset ⚠️</button>
+                    <td data-label="Peran"><span class="badge badge-info">${w.role}</span></td>
+                    <td data-label="Saldo" style="font-size: 1.1em; font-weight: 800; color: var(--primary)">${w.balance.toLocaleString()} pts</td>
+                    <td data-label="Aksi" class="text-right">
+                        <button class="btn btn-primary btn-sm" onclick="AdminController.showAdjustModal(${w.wallet_id}, '${w.full_name}')">Ajust</button>
+                        <button class="btn btn-sm btn-block" style="background: var(--bg-main); color: var(--error); margin-top: 5px;" onclick="AdminController.showResetModal(${w.wallet_id}, '${w.full_name}')">Reset</button>
                     </td>
                 </tr>
             `).join('');
@@ -371,9 +371,9 @@ class AdminController {
         const content = document.getElementById('mainContent');
         content.innerHTML = `
             <div class="fade-in">
-                <div class="tab-header" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-                    <button class="tab-btn ${activeTab === 'catalog' ? 'active' : ''}" onclick="AdminController.renderProducts('catalog')">Katalog Produk</button>
-                    <button class="tab-btn ${activeTab === 'sales' ? 'active' : ''}" onclick="AdminController.renderProducts('sales')">Riwayat Penjualan</button>
+                <div class="tab-header tabs-container" style="margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+                    <button class="tab-btn ${activeTab === 'catalog' ? 'active' : ''}" onclick="AdminController.renderProducts('catalog')" style="white-space: nowrap;">Katalog Produk</button>
+                    <button class="tab-btn ${activeTab === 'sales' ? 'active' : ''}" onclick="AdminController.renderProducts('sales')" style="white-space: nowrap;">Riwayat Penjualan</button>
                 </div>
                 <div id="tabContent"></div>
             </div>

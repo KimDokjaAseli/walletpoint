@@ -5,17 +5,19 @@ class ProfileController {
 
         content.innerHTML = `
             <div class="profile-container" style="max-width: 800px; margin: 0 auto;">
-                <div class="stat-card card-gradient-1" style="display: flex; align-items: center; gap: 2rem; padding: 2.5rem; margin-bottom: 2rem;">
-                    <div class="user-avatar" style="width: 100px; height: 100px; font-size: 2.5rem; background: rgba(255,255,255,0.2);">
-                        ${(user.full_name || user.email || 'U').charAt(0).toUpperCase()}
-                    </div>
-                    <div style="color: white">
-                        <h2 style="margin:0; font-size: 2rem;">${user.full_name || 'User'}</h2>
-                        <p style="margin:0; opacity: 0.8; font-size: 1.1rem;">${user.role.toUpperCase()} • ${user.nim_nip || 'No ID'}</p>
+                <div class="stat-card card-gradient-1 hero-flex" style="padding: 2.5rem; margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1.5rem;">
+                        <div class="user-avatar" style="width: 80px; height: 80px; font-size: 2rem; background: rgba(255,255,255,0.2);">
+                            ${(user.full_name || user.email || 'U').charAt(0).toUpperCase()}
+                        </div>
+                        <div style="color: white">
+                            <h2 style="margin:0; font-size: 1.75rem;">${user.full_name || 'User'}</h2>
+                            <p style="margin:0; opacity: 0.8; font-size: 1rem;">${user.role.toUpperCase()} • ${user.nim_nip || 'No ID'}</p>
+                        </div>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="grid-2-col">
                     <!-- Basic Info -->
                     <div class="table-wrapper" style="margin:0; height: fit-content;">
                         <div class="table-header">

@@ -3,9 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard - Wallet Point</title>
-    <!-- Modern System Font Stack (No External Dependencies) -->
+
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -17,26 +22,28 @@
         <!-- Mobile Sidebar Overlay -->
         <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-        <!-- Sidebar -->
+        <!-- Sidebar (Mainly for Desktop or Extra Settings) -->
         <aside class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
                 <div class="brand-text">WalletPoint</div>
             </div>
 
             <nav class="nav-menu" id="sidebarNav">
-                <!-- Navigation items will be injected by JS based on role -->
+                <!-- Navigation items will be injected by JS -->
             </nav>
 
             <div class="profile-footer">
                 <div class="user-pill">
                     <div class="user-avatar" id="userAvatar">?</div>
-                    <div class="user-details">
-                        <h4 id="userName">Nama Pengguna</h4>
-                        <span id="userRole">Peran</span>
+                    <div class="user-details" style="flex: 1;">
+                        <h4 id="userName"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;">
+                            Nama Pengguna</h4>
+                        <span id="userRole" style="text-transform: capitalize;">Peran</span>
                     </div>
                 </div>
                 <button onclick="API.logout()" class="btn btn-block"
-                    style="margin-top: 1rem; color: var(--error); background: #fee2e2; padding: 0.6rem;">
+                    style="margin-top: 1.5rem; color: var(--error); background: #fee2e2; padding: 0.8rem; border-radius: 12px; font-weight: 700;">
                     Keluar
                 </button>
             </div>
@@ -45,20 +52,25 @@
         <!-- Main Content Area -->
         <main class="main-content">
             <header class="top-bar">
-                <button id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="page-info">
-                    <h1 id="pageTitle">Ringkasan</h1>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"
+                        style="background: #f1f5f9; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div class="page-info">
+                        <h1 id="pageTitle">Ringkasan</h1>
+                    </div>
                 </div>
+
                 <div class="top-actions">
-                    <button class="btn btn-primary" id="globalActionBtn" style="display:none; font-size: 0.875rem;">+
-                        Aksi</button>
+                    <div id="userInitialsDesktop" class="user-avatar"
+                        style="width: 40px; height: 40px; font-size: 0.9rem; cursor: pointer; border: 2px solid white; box-shadow: var(--shadow-sm);"
+                        onclick="handleNavigation('profile')">?</div>
                 </div>
             </header>
 
@@ -66,6 +78,11 @@
                 <!-- Dashboard content will be injected here -->
             </div>
         </main>
+
+        <!-- Modern Bottom Navigation (Mobile Only) -->
+        <nav class="bottom-nav" id="mobileBottomNav">
+            <!-- Items injected by JS based on role -->
+        </nav>
     </div>
 
     <!-- Scripts -->
