@@ -1,0 +1,14 @@
+/* Dosen Role Styles */
+.dosen-quick-review {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+
+    /* Stack charts or analysis on mobile */
+    .dosen-analysis-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

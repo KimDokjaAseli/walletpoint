@@ -1,0 +1,91 @@
+.stat-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--primary);
+}
+
+.stat-label {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.stat-value {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--text-main);
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+
+@media (max-width: 768px) {
+    .stat-card {
+        padding: 1.75rem;
+        border-radius: var(--radius-xl);
+    }
+
+    .stat-value {
+        font-size: 2.25rem;
+    }
+}
+
+/* Gradients */
+.card-gradient-1 {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+    color: white !important;
+}
+
+.card-gradient-2 {
+    background: linear-gradient(135deg, #ec4899, #f43f5e) !important;
+    color: white !important;
+}
+
+.card-gradient-3 {
+    background: linear-gradient(135deg, #10b981, #34d399) !important;
+    color: white !important;
+}
+
+.card-gradient-4 {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+    color: white !important;
+}
+
+[class*="card-gradient-"]::after {
+    display: none !important;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+@media (max-width: 480px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,124 @@
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background: #ffffff;
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.25rem;
+    z-index: 100;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-header {
+    margin-bottom: 3.5rem;
+}
+
+.brand-text {
+    font-size: 1.75rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-item:hover {
+    background: #f8fafc;
+    color: var(--text-main);
+    transform: translateX(4px);
+}
+
+.nav-item.active {
+    background: #eef2ff;
+    color: var(--primary);
+}
+
+/* Bottom Nav */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--bottom-nav-height);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    padding: 0 1rem;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 700;
+    gap: 4px;
+    flex: 1;
+    transition: all 0.3s;
+}
+
+.bottom-nav-item.active {
+    color: var(--primary);
+}
+
+.bottom-nav-icon {
+    font-size: 1.5rem;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bottom-nav-item.active .bottom-nav-icon {
+    transform: translateY(-4px) scale(1.1);
+}
+
+/* Mobile Responsive Sidebar/Nav */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-110%);
+        box-shadow: 20px 0 50px rgba(0, 0, 0, 0.1);
+        border: none;
+        z-index: 2000;
+        /* Above bottom nav */
+        /* Fix: ensure logout button at bottom isn't covered by bottom bar */
+        padding-bottom: calc(var(--bottom-nav-height) + 2.5rem);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .bottom-nav {
+        display: flex;
+    }
+}

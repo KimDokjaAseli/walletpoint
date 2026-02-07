@@ -118,23 +118,23 @@ class MahasiswaController {
                 }
 
                 return `
-                <div class="card fade-in-item" style="display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; padding: 0;">
+                <div class="mission-card fade-in-item">
                     ${m.type === 'quiz' ? '<div style="position: absolute; top: 12px; right: 12px; background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(99, 102, 241, 0.2); z-index: 1;">KUIS</div>' : ''}
                     
-                    <div style="padding: 1.5rem;">
+                    <div class="mission-card-content">
                         <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
-                            <div style="width: 50px; height: 50px; border-radius: 12px; background: ${m.type === 'quiz' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(16, 185, 129, 0.1)'}; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            <div class="mission-icon-box" style="background: ${m.type === 'quiz' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(16, 185, 129, 0.1)'};">
                                 ${m.type === 'quiz' ? '💡' : (m.type === 'assignment' ? '📄' : '✅')}
                             </div>
                             <div style="flex:1">
-                                <h4 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 1.1rem;">${m.title}</h4>
-                                <small style="color: var(--text-muted);">${m.creator_name || 'Academic Lab'}</small>
+                                <h4 class="mission-title">${m.title}</h4>
+                                <small style="color: var(--text-muted); font-weight: 600;">${m.creator_name || 'Academic Lab'}</small>
                             </div>
                         </div>
 
                         ${statusBadge ? `<div style="margin-bottom:1rem;">${statusBadge}</div>` : ''}
 
-                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
                             ${m.description || 'Selesaikan misi ini untuk mendapatkan pengakuan dan poin.'}
                         </p>
                         
@@ -143,27 +143,27 @@ class MahasiswaController {
                                 <strong>Feedback:</strong> ${sub.review_note}
                             </div>
                         ` : ''}
+                    </div>
 
-                        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border);">
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="font-size: 1.1rem;">💎</span>
-                                <span style="font-weight: 800; color: var(--text-main); font-size: 1.1rem;">${m.points}</span>
-                                <span style="color: var(--text-muted); font-size: 0.8rem;">pts</span>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">DEADLINE</div>
-                                <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-main);">
-                                    ${m.deadline ? new Date(m.deadline).toLocaleDateString() : 'OPEN'}
-                                </div>
+                    <div class="mission-footer">
+                        <div class="mission-points">
+                            <span style="font-size: 1.1rem;">💎</span>
+                            <span style="font-weight: 900; color: var(--text-main); font-size: 1.1rem;">${m.points}</span>
+                            <span style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">pts</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Deadline</div>
+                            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">
+                                ${m.deadline ? new Date(m.deadline).toLocaleDateString() : 'OPEN'}
                             </div>
                         </div>
                     </div>
 
-                    <div style="padding: 1rem; padding-top: 0;">
+                    <div style="padding: 1.25rem; background: #fff;">
                         ${actionBtn}
                     </div>
                 </div>
-            `;
+                `;
             }).join('');
 
         } catch (e) {
@@ -450,18 +450,18 @@ class MahasiswaController {
             }
 
             grid.innerHTML = products.map(p => `
-                <div class="card product-card fade-in-item" style="padding: 0; overflow: hidden; border: 1px solid var(--border); transition: transform 0.3s;">
-                    <div style="height: 180px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 4rem; position: relative; overflow: hidden;">
+                <div class="card product-card fade-in-item">
+                    <div class="product-image-box">
                         ${p.image_url ?
-                    `<img src="${p.image_url.startsWith('http') ? p.image_url : `${CONFIG.BASE_URL}/${p.image_url.replace(/^\/+/, '')}`}" style="width:100%; height:100%; object-fit:cover;">`
+                    `<img src="${p.image_url.startsWith('http') ? p.image_url : `${CONFIG.BASE_URL}/${p.image_url.replace(/^\/+/, '')}`}" class="product-img">`
                     : (p.category === 'vouchers' ? '🎟️' : (p.category === 'merchandise' ? '👕' : '🎁'))}
-                        <div style="position: absolute; bottom: 10px; right: 10px; background: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; box-shadow: var(--shadow-sm); color: ${p.stock > 0 ? 'var(--success)' : 'var(--error)'};">
+                        <div class="product-stock-badge" style="color: ${p.stock > 0 ? 'var(--success)' : 'var(--error)'};">
                             STOCK: ${p.stock}
                         </div>
                     </div>
-                    <div style="padding: 1.5rem;">
-                        <h4 style="margin:0; color: var(--text-main); font-weight: 700;">${p.name}</h4>
-                        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0 1.2rem; line-height: 1.4; min-height: 2.4em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${p.description}</p>
+                    <div class="product-details">
+                        <h4 class="product-title">${p.name}</h4>
+                        <p class="product-desc">${p.description}</p>
                         
                             <div style="display: flex; align-items: center; justify-content: space-between;">
                                 <div style="display: flex; align-items: center; gap: 0.3rem;">
@@ -469,7 +469,7 @@ class MahasiswaController {
                                     <span style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">${p.price.toLocaleString()}</span>
                                 </div>
                                 <div style="display:flex; gap:0.5rem;">
-                                    <button class="btn" style="padding: 0.5rem; border-radius: 50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:#f1f5f9; color:var(--primary); font-size:1.1rem;" 
+                                    <button class="btn-cart-add" 
                                             onclick="MahasiswaController.addToCart(${p.id})" ${p.stock <= 0 ? 'disabled' : ''} title="Tambah ke Keranjang">
                                         🛒
                                     </button>
@@ -486,9 +486,9 @@ class MahasiswaController {
 
             // Add Floating Cart Button
             const cartBtn = `
-                <button onclick="MahasiswaController.showCart()" style="position: fixed; bottom: 2rem; right: 2rem; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5); z-index: 100; border: none; cursor: pointer; transition: transform 0.2s;">
+                <button class="floating-cart-btn" onclick="MahasiswaController.showCart()">
                     🛒
-                    <span id="cartCountBadge" style="position: absolute; top: 0; right: 0; background: var(--error); color: white; font-size: 0.75rem; font-weight: 700; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; opacity:0;">0</span>
+                    <span id="cartCountBadge" class="cart-badge-dot" style="opacity:0;">0</span>
                 </button>
             `;
             const content = document.getElementById('mainContent');

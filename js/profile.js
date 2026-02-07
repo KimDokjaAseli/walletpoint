@@ -4,10 +4,10 @@ class ProfileController {
         const user = JSON.parse(localStorage.getItem('user')) || {};
 
         content.innerHTML = `
-            <div class="profile-container" style="max-width: 800px; margin: 0 auto;">
-                <div class="stat-card card-gradient-1 hero-flex" style="padding: 2.5rem; margin-bottom: 2rem;">
+            <div class="profile-container fade-in">
+                <div class="profile-header-card card-gradient-1 hero-flex">
                     <div style="display: flex; align-items: center; gap: 1.5rem;">
-                        <div class="user-avatar" style="width: 80px; height: 80px; font-size: 2rem; background: rgba(255,255,255,0.2);">
+                        <div class="profile-avatar-big">
                             ${(user.full_name || user.email || 'U').charAt(0).toUpperCase()}
                         </div>
                         <div style="color: white">

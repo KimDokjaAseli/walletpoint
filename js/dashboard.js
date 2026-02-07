@@ -364,15 +364,12 @@ function renderDashboard(user) {
         content.innerHTML = `
             <div class="fade-in">
                 <!-- HERO SECTION -->
-                <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border-radius: 24px; padding: 2.5rem; color: white; position: relative; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);">
-                    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                    <div style="position: absolute; bottom: -30px; left: 40px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                    
+                <div class="student-hero">
                     <div class="hero-flex" style="position: relative; z-index: 2;">
                         <div>
                             <div style="font-size: 1.1rem; opacity: 0.9; font-weight: 500;">👋 ${greeting},</div>
                             <h2 style="font-size: 2.5rem; font-weight: 800; margin: 0.2rem 0 1rem; letter-spacing: -0.02em;">${user.full_name || 'Mahasiswa'}</h2>
-                            <div style="display: inline-flex; align-items: center; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 0.5rem 1rem; border-radius: 12px; font-weight: 600;">
+                            <div class="balance-card">
                                 <span style="margin-right: 0.5rem;">💎</span> 
                                 <span id="userBalance" style="font-size: 1.2rem;">...</span> 
                                 <span style="font-size: 0.8rem; margin-left: 0.3rem; opacity: 0.8;">Emerald Pts</span>

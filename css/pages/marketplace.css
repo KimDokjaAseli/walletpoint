@@ -1,0 +1,131 @@
+/* Marketplace / Shop Styles */
+.product-card {
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.3s;
+    background: white;
+    border-radius: var(--radius-2xl);
+}
+
+.product-image-box {
+    height: 180px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-stock-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+}
+
+.product-details {
+    padding: 1.5rem;
+}
+
+.product-title {
+    margin: 0;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.product-desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0.5rem 0 1.2rem;
+    line-height: 1.4;
+    min-height: 2.4em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.btn-cart-add {
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    color: var(--primary);
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-cart-add:hover {
+    background: #e2e8f0;
+    transform: scale(1.1);
+}
+
+/* Floating Cart Button */
+.floating-cart-btn {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + 1.5rem);
+    right: 1.5rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5);
+    z-index: 100;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.floating-cart-btn:active {
+    transform: scale(0.9);
+}
+
+.cart-badge-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--error);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+}
+
+@media (max-width: 768px) {
+
+    /* Ensure floating cart is above bottom nav and not covered */
+    .floating-cart-btn {
+        bottom: calc(var(--bottom-nav-height) + 1rem);
+    }
+}
