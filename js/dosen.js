@@ -137,46 +137,46 @@ class DosenController {
 
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-card" style="max-width: 1000px; width: 95%; height: 90vh; display: flex; flex-direction: column;">
-                    <div class="modal-head" style="background: linear-gradient(to right, #6366f1, #a855f7); color: white; padding: 1.5rem 2rem;">
-                        <div>
-                            <h3 style="margin:0; font-weight: 700;">${id ? '📝 Edit Penilaian' : '✨ Desain Kuis Baru'}</h3>
-                            <p style="margin: 0.2rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">Konfigurasikan pertanyaan dan hadiah untuk siswa Anda</p>
+                <div class="modal-card" style="max-width: 1000px; width: 95%; height: 90vh; display: flex; flex-direction: column; position: relative;">
+                    <div class="modal-head" style="background: linear-gradient(to right, #6366f1, #a855f7); color: white; border-bottom: none;">
+                        <div style="flex: 1; padding-right: 1.5rem;">
+                            <h3 style="margin:0; font-weight: 850; letter-spacing: -0.02em;">${id ? '📝 Edit Penilaian' : '✨ Desain Kuis Baru'}</h3>
+                            <p style="margin: 0.2rem 0 0 0; font-size: 0.8rem; opacity: 0.9;">Konfigurasikan pertanyaan dan hadiah untuk siswa Anda</p>
                         </div>
-                        <button class="btn-icon" onclick="closeModal()" style="color: white; font-size: 1.5rem;">×</button>
+                        <button class="btn-icon" onclick="closeModal()" style="color: white; font-size: 1.8rem; opacity: 0.8; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">×</button>
                     </div>
                     
                     <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 2rem; background: #fdfcfd;">
                         <form id="quizForm" onsubmit="DosenController.handleQuizSubmit(event, ${id})">
                             <!-- Basic Config Card -->
-                            <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary); padding: 1.5rem;">
-                                <div class="grid-2-col" style="gap: 2rem;">
+                            <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary); padding: 1.25rem; background: #fff; box-shadow: var(--shadow-sm);">
+                                <div class="grid-2-col" style="gap: 1.5rem;">
                                     <div>
                                         <div class="form-group">
-                                            <label style="font-weight: 600; color: var(--text-main);">Judul Kuis</label>
-                                            <input type="text" name="title" value="${quiz?.title || ''}" required placeholder="misal, Matematika - Dasar Aljabar" style="border-radius: 10px;">
+                                            <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Judul Kuis</label>
+                                            <input type="text" name="title" value="${quiz?.title || ''}" required placeholder="misal, Dasar Aljabar" style="border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem;">
                                         </div>
                                         <div class="form-group">
-                                            <label style="font-weight: 600; color: var(--text-main);">Panduan & Deskripsi</label>
-                                            <textarea name="description" placeholder="Sebutkan aturan atau konteks kuis..." style="min-height: 100px; border-radius: 10px;">${quiz?.description || ''}</textarea>
+                                            <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Panduan & Deskripsi</label>
+                                            <textarea name="description" placeholder="Aturan kuis..." style="min-height: 80px; border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem;">${quiz?.description || ''}</textarea>
                                         </div>
                                     </div>
                                     <div>
                                         <div class="grid-2-col" style="gap: 1rem;">
                                             <div class="form-group">
-                                                <label style="font-weight: 600; color: var(--text-main);">Alokasi Poin</label>
+                                                <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Alokasi Poin</label>
                                                 <div style="position: relative;">
-                                                    <input type="number" name="points" value="${quiz?.points || 100}" required min="1" style="padding-left: 2.5rem; border-radius: 10px;">
-                                                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); opacity: 0.5;">💎</span>
+                                                    <input type="number" name="points" value="${quiz?.points || 100}" required min="1" style="padding-left: 2.8rem; border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem 0.8rem 2.8rem;">
+                                                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem;">💎</span>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label style="font-weight: 600; color: var(--text-main);">Batas Waktu / Tenggat</label>
-                                                <input type="datetime-local" name="deadline" value="${quiz?.deadline ? new Date(quiz.deadline).toISOString().slice(0, 16) : ''}" style="border-radius: 10px;">
+                                                <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Deadline</label>
+                                                <input type="datetime-local" name="deadline" value="${quiz?.deadline ? new Date(quiz.deadline).toISOString().slice(0, 16) : ''}" style="border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem;">
                                             </div>
                                         </div>
-                                        <div style="background: rgba(99, 102, 241, 0.05); padding: 1rem; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--primary); border: 1px dashed var(--primary-light);">
-                                            <strong>Tip Pro:</strong> Kuis dengan poin lebih tinggi cenderung memiliki keterlibatan siswa yang lebih baik. Pastikan tenggat waktu masuk akal!
+                                        <div style="background: rgba(99, 102, 241, 0.05); padding: 1rem; border-radius: 12px; font-size: 0.8rem; color: var(--primary); border: 1px dashed var(--primary-light); line-height: 1.5; margin-top: 0.5rem;">
+                                            <strong style="display: block; margin-bottom: 0.25rem;">💡 Tip Pro:</strong> Kuis dengan poin lebih tinggi cenderung memiliki keterlibatan siswa yang lebih baik.
                                         </div>
                                     </div>
                                 </div>
@@ -200,15 +200,15 @@ class DosenController {
                         </form>
                     </div>
 
-                    <div class="modal-foot" style="padding: 1.5rem 2rem; border-top: 1px solid var(--border); background: white; border-bottom-left-radius: var(--radius-xl); border-bottom-right-radius: var(--radius-xl);">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="color: var(--text-muted); font-size: 0.9rem;">
-                                ✨ Total Poin: <span id="pointsPreview" style="font-weight: 700; color: var(--primary);">${quiz?.points || 100}</span>
+                    <div class="modal-foot" style="border-top: 1px solid var(--border); background: white; border-bottom-left-radius: var(--radius-xl); border-bottom-right-radius: var(--radius-xl);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div style="color: var(--text-muted); font-size: 0.9rem; font-weight: 600;">
+                                ✨ Total Poin: <span id="pointsPreview" style="font-weight: 850; color: var(--primary); font-size: 1.1rem;">${quiz?.points || 100}</span>
                             </div>
-                            <div style="display: flex; gap: 1rem;">
-                                <button type="button" class="btn btn-secondary" onclick="closeModal()" style="background: transparent; color: var(--text-muted);">Buang</button>
-                                <button type="submit" form="quizForm" class="btn btn-primary" style="padding: 0.8rem 2.5rem; border-radius: 2rem;">
-                                    ${id ? 'Perbarui Penilaian' : 'Luncurkan Kuis 🚀'}
+                            <div style="display: flex; gap: 0.75rem; flex: 1; justify-content: flex-end;">
+                                <button type="button" class="btn btn-secondary" onclick="closeModal()" style="background: #f1f5f9; color: var(--text-muted); padding: 0.8rem 1.5rem; border: none;">Buang</button>
+                                <button type="submit" form="quizForm" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 2rem; font-weight: 700;">
+                                    ${id ? 'Simpan Edit' : 'Terbitkan Kuis 🚀'}
                                 </button>
                             </div>
                         </div>
@@ -481,13 +481,13 @@ class DosenController {
 
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-card" style="max-width: 650px; width: 95%; overflow: hidden; border-radius: var(--radius-xl);">
-                    <div class="modal-head" style="background: var(--primary); color: white; padding: 1.5rem 2rem;">
-                        <div>
-                            <h3 style="margin:0; font-weight: 700;">${id ? '🛠️ Sempurnakan Misi' : '✨ Arsiteki Misi Baru'}</h3>
-                            <p style="margin: 0.2rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">Desain tugas untuk menantang siswa Anda</p>
+                <div class="modal-card" style="max-width: 650px; width: 95%; overflow: hidden; border-radius: var(--radius-xl); position: relative;">
+                    <div class="modal-head" style="background: var(--primary); color: white; border-bottom: none;">
+                        <div style="flex: 1; padding-right: 1.5rem;">
+                            <h3 style="margin:0; font-weight: 850; letter-spacing: -0.02em;">${id ? '🛠️ Sempurnakan Misi' : '✨ Arsiteki Misi Baru'}</h3>
+                            <p style="margin: 0.2rem 0 0 0; font-size: 0.8rem; opacity: 0.9;">Desain tugas untuk menantang siswa Anda</p>
                         </div>
-                        <button class="btn-icon" onclick="closeModal()" style="color: white; font-size: 1.5rem;">×</button>
+                        <button class="btn-icon" onclick="closeModal()" style="color: white; font-size: 1.8rem; opacity: 0.8;">×</button>
                     </div>
 
                     <div class="modal-body" style="padding: 2rem;">
@@ -523,10 +523,10 @@ class DosenController {
                                 <input type="datetime-local" name="deadline" value="${mission?.deadline ? new Date(mission.deadline).toISOString().slice(0, 16) : ''}" style="border-radius: 10px;">
                             </div>
 
-                            <div class="form-actions" style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
-                                <button type="button" class="btn" onclick="closeModal()" style="background: transparent; color: var(--text-muted);">Buang Perubahan</button>
-                                <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 2rem; box-shadow: var(--shadow-md);">
-                                    ${id ? 'Eksekusi Pembaruan' : 'Luncurkan Misi 🚀'}
+                            <div class="form-actions" style="margin-top: 2rem; border-top: 1px solid var(--border); padding: 1.5rem 0 0 0; display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap;">
+                                <button type="button" class="btn" onclick="closeModal()" style="background: #f1f5f9; color: var(--text-muted); padding: 0.8rem 1.5rem;">Batal</button>
+                                <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem; border-radius: 2rem; font-weight: 700; box-shadow: var(--shadow-md);">
+                                    ${id ? 'Simpan Perubahan' : 'Luncurkan Misi 🚀'}
                                 </button>
                             </div>
                         </form>
