@@ -598,18 +598,22 @@ class DosenController {
                     <p style="color: var(--text-muted);">Tinjau pengiriman siswa dan berikan poin</p>
                 </div>
 
-                <div class="tabs" style="margin-bottom: 1.5rem; display:flex; gap: 1rem; border-bottom: 2px solid var(--border);">
+                <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm); display: flex; overflow-x: auto; gap: 0.5rem; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
                     <button class="tab-btn ${statusFilter === 'pending' ? 'active' : ''}" 
                             onclick="DosenController.renderSubmissions('pending', ${missionId})"
-                            style="padding: 0.8rem 1.5rem; background:none; border:none; border-bottom: 3px solid ${statusFilter === 'pending' ? 'var(--primary)' : 'transparent'}; font-weight: 600; color: ${statusFilter === 'pending' ? 'var(--primary)' : 'var(--text-muted)'}; cursor: pointer;">
+                            style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${statusFilter === 'pending' ? '700' : '600'}; background: ${statusFilter === 'pending' ? 'var(--primary)' : 'transparent'}; color: ${statusFilter === 'pending' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">
                         ⏳ Menunggu Peninjauan
                     </button>
                     <button class="tab-btn ${statusFilter !== 'pending' ? 'active' : ''}" 
                             onclick="DosenController.renderSubmissions('approved', ${missionId})"
-                            style="padding: 0.8rem 1.5rem; background:none; border:none; border-bottom: 3px solid ${statusFilter !== 'pending' ? 'var(--primary)' : 'transparent'}; font-weight: 600; color: ${statusFilter !== 'pending' ? 'var(--primary)' : 'var(--text-muted)'}; cursor: pointer;">
+                            style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${statusFilter !== 'pending' ? '700' : '600'}; background: ${statusFilter !== 'pending' ? 'var(--primary)' : 'transparent'}; color: ${statusFilter !== 'pending' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">
                         ✅ Riwayat / Ditinjau
                     </button>
                 </div>
+                <style>
+                    .tabs-container::-webkit-scrollbar { display: none; }
+                </style>
+
 
                 <div class="table-wrapper">
                     <div style="overflow-x: auto;">

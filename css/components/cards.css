@@ -80,12 +80,22 @@
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
 }
 
+/* Tablet */
+@media (max-width: 768px) {
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.25rem;
+    }
+}
+
+/* Mobile */
 @media (max-width: 480px) {
     .card-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 }

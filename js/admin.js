@@ -158,20 +158,19 @@ class AdminController {
         const content = document.getElementById('mainContent');
         content.innerHTML = `
             <div class="fade-in">
-                <div class="tab-header" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-                    <button class="tab-btn ${activeTab === 'accounts' ? 'active' : ''}" onclick="AdminController.renderUsers('accounts')">Daftar Akun</button>
-                    <button class="tab-btn ${activeTab === 'wallets' ? 'active' : ''}" onclick="AdminController.renderUsers('wallets')">Manajemen Dompet</button>
-                    <button class="tab-btn ${activeTab === 'transactions' ? 'active' : ''}" onclick="AdminController.renderUsers('transactions')">Log Transaksi</button>
-                    <button class="tab-btn ${activeTab === 'transfers' ? 'active' : ''}" onclick="AdminController.renderUsers('transfers')">Riwayat P2P</button>
+                <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm); display: flex; overflow-x: auto; gap: 0.5rem; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                    <button class="tab-btn ${activeTab === 'accounts' ? 'active' : ''}" onclick="AdminController.renderUsers('accounts')" style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${activeTab === 'accounts' ? '700' : '600'}; background: ${activeTab === 'accounts' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'accounts' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">Daftar Akun</button>
+                    <button class="tab-btn ${activeTab === 'wallets' ? 'active' : ''}" onclick="AdminController.renderUsers('wallets')" style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${activeTab === 'wallets' ? '700' : '600'}; background: ${activeTab === 'wallets' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'wallets' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">Manajemen Dompet</button>
+                    <button class="tab-btn ${activeTab === 'transactions' ? 'active' : ''}" onclick="AdminController.renderUsers('transactions')" style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${activeTab === 'transactions' ? '700' : '600'}; background: ${activeTab === 'transactions' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'transactions' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">Log Transaksi</button>
+                    <button class="tab-btn ${activeTab === 'transfers' ? 'active' : ''}" onclick="AdminController.renderUsers('transfers')" style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${activeTab === 'transfers' ? '700' : '600'}; background: ${activeTab === 'transfers' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'transfers' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">Riwayat P2P</button>
                 </div>
                 <div id="tabContent"></div>
             </div>
             <style>
-                .tab-btn { background: none; border: none; padding: 0.75rem 1.5rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-radius: 8px; transition: 0.3s; }
-                .tab-btn.active { background: var(--primary-bg); color: var(--primary); }
-                .tab-btn:hover:not(.active) { background: #f8fafc; color: var(--text-main); }
+                .tabs-container::-webkit-scrollbar { display: none; }
             </style>
         `;
+
 
         if (activeTab === 'accounts') await this.renderUserAccounts();
         else if (activeTab === 'wallets') await this.renderWallets();
@@ -371,13 +370,17 @@ class AdminController {
         const content = document.getElementById('mainContent');
         content.innerHTML = `
             <div class="fade-in">
-                <div class="tab-header tabs-container" style="margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-                    <button class="tab-btn ${activeTab === 'catalog' ? 'active' : ''}" onclick="AdminController.renderProducts('catalog')" style="white-space: nowrap;">Katalog Produk</button>
-                    <button class="tab-btn ${activeTab === 'sales' ? 'active' : ''}" onclick="AdminController.renderProducts('sales')" style="white-space: nowrap;">Riwayat Penjualan</button>
+                <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm); display: flex; overflow-x: auto; gap: 0.5rem; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+                    <button class="tab-btn ${activeTab === 'catalog' ? 'active' : ''}" onclick="AdminController.renderProducts('catalog')" style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${activeTab === 'catalog' ? '700' : '600'}; background: ${activeTab === 'catalog' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'catalog' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">Katalog Produk</button>
+                    <button class="tab-btn ${activeTab === 'sales' ? 'active' : ''}" onclick="AdminController.renderProducts('sales')" style="white-space: nowrap; padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: ${activeTab === 'sales' ? '700' : '600'}; background: ${activeTab === 'sales' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'sales' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">Riwayat Penjualan</button>
                 </div>
                 <div id="tabContent"></div>
             </div>
+            <style>
+                .tabs-container::-webkit-scrollbar { display: none; }
+            </style>
         `;
+
 
         if (activeTab === 'catalog') await this.renderCatalog();
         else if (activeTab === 'sales') await this.renderSalesHistory();

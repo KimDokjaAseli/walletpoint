@@ -12,10 +12,17 @@ class MahasiswaController {
         const content = document.getElementById('mainContent');
         content.innerHTML = `
             <div class="fade-in">
-                <div style="margin-bottom: 1.5rem;">
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Dapatkan Poin Berlian dengan menyelesaikan tantangan di bawah ini.</p>
+                <!-- Modern Missions Header -->
+                <div class="missions-header">
+                    <div class="missions-hero">
+                        <div class="missions-hero-content">
+                            <h2>Lokakarya Misi</h2>
+                            <p>Koordinasikan tugas dan penugasan untuk pengembangan siswa</p>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Filter Tabs -->
                 <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm);">
                     <button class="tab-btn active" onclick="MahasiswaController.filterMissions('all', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; background: var(--primary); color: white; white-space: nowrap; transition: 0.3s;">Semua Item</button>
                     <button class="tab-btn" onclick="MahasiswaController.filterMissions('quiz', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent; color: var(--text-muted); white-space: nowrap; transition: 0.3s;">Kuis</button>
@@ -23,6 +30,7 @@ class MahasiswaController {
                     <button class="tab-btn" onclick="MahasiswaController.filterMissions('history', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent; color: var(--text-muted); white-space: nowrap; transition: 0.3s;">Riwayat & Status</button>
                 </div>
 
+                <!-- Missions Grid -->
                 <div class="card-grid" id="missionsGrid">
                     <div class="text-center" style="grid-column: 1/-1; padding: 4rem;">Memuat peluang menarik...</div>
                 </div>
@@ -87,84 +95,86 @@ class MahasiswaController {
                 return;
             }
 
+
             grid.innerHTML = filtered.map(m => {
                 const sub = subMap[m.id];
                 const isPending = sub && sub.status === 'pending';
                 const isRejected = sub && sub.status === 'rejected';
                 const isApproved = sub && sub.status === 'approved';
 
+                // Determine status badge
                 let statusBadge = '';
-                let actionBtn = '';
-
                 if (isPending) {
-                    statusBadge = '<span class="badge badge-warning">Sedang Ditinjau</span>';
-                    actionBtn = `<button class="btn btn-block" disabled style="background:#f1f5f9; color:var(--text-muted);">Menunggu Review ⏳</button>`;
-                } else if (isRejected) {
-                    statusBadge = '<span class="badge badge-error">Perlu Perbaikan</span>';
-                    actionBtn = `
-                        <button class="btn btn-primary btn-block" style="background: var(--error);" 
-                                onclick="${m.type === 'quiz' ? `MahasiswaController.takeQuiz(${m.id})` : `MahasiswaController.showSubmitModal(${m.id})`}">
-                            Perbaiki & Kirim Ulang 🔄
-                        </button>`;
+                    statusBadge = '<span class="mission-status-badge pending">⏳ Pending</span>';
                 } else if (isApproved) {
-                    statusBadge = '<span class="badge badge-success">Selesai ✅</span>';
-                    actionBtn = `<button class="btn btn-block" disabled style="background:#f1f5f9; color:var(--success); font-weight:700;">Lulus! +${sub.score || m.points} Pts</button>`;
+                    statusBadge = '<span class="mission-status-badge completed">✓ Selesai</span>';
                 } else {
-                    actionBtn = `
-                        <button class="btn btn-primary btn-block" style="background: ${m.type === 'quiz' ? 'linear-gradient(to right, #6366f1, #a855f7)' : 'var(--primary)'};" 
-                                onclick="${m.type === 'quiz' ? `MahasiswaController.takeQuiz(${m.id})` : `MahasiswaController.showSubmitModal(${m.id})`}">
-                            ${m.type === 'quiz' ? 'Ikuti Kuis Sekarang 🚀' : 'Mulai Misi ✨'}
-                        </button>`;
+                    statusBadge = '<span class="mission-status-badge active">Aktif</span>';
                 }
 
                 return `
                 <div class="mission-card fade-in-item">
-                    ${m.type === 'quiz' ? '<div style="position: absolute; top: 12px; right: 12px; background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(99, 102, 241, 0.2); z-index: 1;">KUIS</div>' : ''}
-                    
-                    <div class="mission-card-content">
-                        <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem;">
-                            <div class="mission-icon-box" style="background: ${m.type === 'quiz' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(16, 185, 129, 0.1)'};">
-                                ${m.type === 'quiz' ? '💡' : (m.type === 'assignment' ? '📄' : '✅')}
+                    <div class="mission-card-body">
+                        <!-- row: MISI -->
+                        <div class="mission-row">
+                            <div class="mission-label">MISI</div>
+                            <div class="mission-value" style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div class="mission-icon-box small" style="background: ${m.type === 'quiz' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(16, 185, 129, 0.1)'};">
+                                    ${m.type === 'quiz' ? '📝' : '✅'}
+                                </div>
+                                <div style="flex:1">
+                                    <div class="mission-title">${m.title}</div>
+                                    <div class="mission-subtitle">${m.description || 'Implementasikan Sorting Algorithm...'}</div>
+                                </div>
+                                ${isApproved ? '<div class="mission-check">✓</div>' : ''}
                             </div>
-                            <div style="flex:1">
-                                <h4 class="mission-title">${m.title}</h4>
-                                <small style="color: var(--text-muted); font-weight: 600;">${m.creator_name || 'Academic Lab'}</small>
+                        </div>
+
+                        <!-- row: TIPE -->
+                        <div class="mission-row">
+                            <div class="mission-label">TIPE</div>
+                            <div class="mission-value"><strong>${m.type === 'quiz' ? 'quiz' : 'task'}</strong></div>
+                        </div>
+
+                        <!-- row: REWARD -->
+                        <div class="mission-row">
+                            <div class="mission-label">REWARD</div>
+                            <div class="mission-value" style="display: flex; align-items: center; gap: 0.35rem;">
+                                <span style="font-size: 1.1rem;">💎</span>
+                                <strong>${m.points}</strong>
                             </div>
                         </div>
 
-                        ${statusBadge ? `<div style="margin-bottom:1rem;">${statusBadge}</div>` : ''}
-
-                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
-                            ${m.description || 'Selesaikan misi ini untuk mendapatkan pengakuan dan poin.'}
-                        </p>
-                        
-                        ${isRejected && sub.review_note ? `
-                            <div style="background:rgba(239, 68, 68, 0.05); color:var(--error); padding:0.75rem; border-radius:12px; font-size:0.85rem; margin-bottom:1rem; border:1px solid rgba(239, 68, 68, 0.1);">
-                                <strong>Feedback:</strong> ${sub.review_note}
-                            </div>
-                        ` : ''}
-                    </div>
-
-                    <div class="mission-footer">
-                        <div class="mission-points">
-                            <span style="font-size: 1.1rem;">💎</span>
-                            <span style="font-weight: 900; color: var(--text-main); font-size: 1.1rem;">${m.points}</span>
-                            <span style="color: var(--text-muted); font-size: 0.8rem; font-weight: 600;">pts</span>
+                        <!-- row: TARGET -->
+                        <div class="mission-row">
+                            <div class="mission-label">TARGET</div>
+                            <div class="mission-value"><strong>${m.deadline ? new Date(m.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }).toUpperCase() : 'OPEN'}</strong></div>
                         </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Deadline</div>
-                            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">
-                                ${m.deadline ? new Date(m.deadline).toLocaleDateString() : 'OPEN'}
+
+                        <!-- row: STATUS -->
+                        <div class="mission-row">
+                            <div class="mission-label">STATUS</div>
+                            <div class="mission-value">
+                                ${statusBadge}
                             </div>
                         </div>
-                    </div>
 
-                    <div style="padding: 1.25rem; background: #fff;">
-                        ${actionBtn}
+                        <!-- row: AKSI -->
+                        <div class="mission-row no-border">
+                            <div class="mission-label">AKSI</div>
+                            <div class="mission-value" style="display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;">
+                                <div class="action-buttons-group">
+                                    <button class="btn-action-round secondary" onclick="alert('Statistik')">📊</button>
+                                    <button class="btn-action-round secondary" onclick="${m.type === 'quiz' ? `MahasiswaController.takeQuiz(${m.id})` : `MahasiswaController.showSubmitModal(${m.id})`}">✏️</button>
+                                    <button class="btn-action-round primary" onclick="MahasiswaController.showSubmitModal(${m.id})">🚀</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 `;
             }).join('');
+
 
         } catch (e) {
             console.error(e);
@@ -1052,14 +1062,17 @@ class MahasiswaController {
                 </div>
 
                 <div class="card" style="max-width:800px; margin:0 auto; padding:1.5rem; border-radius:24px; box-shadow:var(--shadow-md);">
-                    <div style="display:flex; gap:1rem; margin-bottom:2rem; border-bottom:1px solid var(--border); padding-bottom:1rem; justify-content:center;">
-                        <button class="btn ${activeTab === 'scan' ? 'btn-primary' : 'btn-secondary'}" onclick="MahasiswaController.renderTransferScanHub('scan')" style="border-radius:20px; padding:0.75rem 2rem;">
+                    <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm); display: flex; overflow-x: auto; gap: 0.5rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; justify-content: center;">
+                        <button class="tab-btn ${activeTab === 'scan' ? 'active' : ''}" onclick="MahasiswaController.renderTransferScanHub('scan')" 
+                                style="white-space: nowrap; padding: 0.6rem 2rem; border: none; border-radius: 20px; cursor: pointer; font-weight: ${activeTab === 'scan' ? '700' : '600'}; background: ${activeTab === 'scan' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'scan' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">
                             📸 Pindai QR
                         </button>
-                        <button class="btn ${activeTab === 'transfer' ? 'btn-primary' : 'btn-secondary'}" onclick="MahasiswaController.renderTransferScanHub('transfer')" style="border-radius:20px; padding:0.75rem 2rem;">
+                        <button class="tab-btn ${activeTab === 'transfer' ? 'active' : ''}" onclick="MahasiswaController.renderTransferScanHub('transfer')" 
+                                style="white-space: nowrap; padding: 0.6rem 2rem; border: none; border-radius: 20px; cursor: pointer; font-weight: ${activeTab === 'transfer' ? '700' : '600'}; background: ${activeTab === 'transfer' ? 'var(--primary)' : 'transparent'}; color: ${activeTab === 'transfer' ? 'white' : 'var(--text-muted)'}; transition: 0.3s;">
                             📤 Transfer Manual
                         </button>
                     </div>
+
 
                     <div id="hubContent">
                         <!-- Content injected here -->

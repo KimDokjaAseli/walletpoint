@@ -1,82 +1,275 @@
-/* Mission Cards */
-.mission-card {
+/* Missions Page Header */
+.missions-header {
+    margin-bottom: 2rem;
+}
+
+.missions-hero {
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    overflow: hidden;
-    padding: 0;
-    transition: transform 0.3s, box-shadow 0.3s;
-    background: white;
-    border-radius: var(--radius-2xl);
-    border: 1px solid var(--border);
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.mission-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
-.mission-card-content {
-    padding: 1.5rem;
-}
-
-.mission-icon-box {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-.mission-title {
-    margin: 0;
-    font-weight: 700;
+.missions-hero-content h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
     color: var(--text-main);
-    font-size: 1.15rem;
-    line-height: 1.3;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
 }
 
-.mission-points {
+.missions-hero-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.missions-add-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #f8fafc;
-    border-radius: 12px;
+    white-space: nowrap;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
 }
 
-.mission-footer {
+.missions-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+}
+
+/* Mission Cards */
+.mission-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.mission-card-body {
+    padding: 0;
+}
+
+.mission-row {
+    display: flex;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    align-items: center;
+}
+
+.mission-row.no-border {
+    border-bottom: none;
+}
+
+.mission-label {
+    width: 80px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #9ca3af;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+.mission-value {
+    flex: 1;
+    font-size: 0.875rem;
+    color: #1f2937;
+    min-width: 0;
+}
+
+.mission-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #111827;
+    margin-bottom: 0.15rem;
+}
+
+.mission-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mission-check {
+    color: #16a34a;
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+.mission-status-badge {
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.mission-status-badge.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.mission-status-badge.pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.mission-status-badge.completed {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.action-buttons-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-action-round {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border);
-    background: #fcfdfe;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-action-round.secondary {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+}
+
+.btn-action-round.primary {
+    background: #6366f1;
+    color: white;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.mission-icon-box.small {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 1rem;
 }
 
 /* Mobile Adjustments */
+@media (max-width: 768px) {
+    .missions-hero {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .missions-hero-content h2 {
+        font-size: 1.5rem;
+    }
+
+    .missions-add-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-grid {
+        gap: 1rem;
+    }
+
+    .mission-icon-box {
+        width: 42px;
+        height: 42px;
+        font-size: 1.3rem;
+    }
+}
+
 @media (max-width: 480px) {
+    .missions-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .missions-hero-content h2 {
+        font-size: 1.25rem;
+    }
+
+    .missions-hero-content p {
+        font-size: 0.8rem;
+    }
+
+    .missions-add-btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .mission-card {
+        border-radius: 12px;
+    }
+
     .mission-card-content {
-        padding: 1.25rem;
+        padding: 0.875rem;
+    }
+
+    .mission-icon-box {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+        border-radius: 8px;
     }
 
     .mission-title {
-        font-size: 1.05rem;
+        font-size: 0.9rem;
+    }
+
+    .mission-desc {
+        font-size: 0.75rem;
+        line-height: 1.4;
     }
 
     .mission-footer {
         flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
+        gap: 0.75rem;
+        align-items: stretch;
+        padding: 0.875rem;
+    }
+
+    .mission-footer>div {
+        width: 100%;
     }
 
     .mission-footer>div:last-child {
-        text-align: left !important;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        justify-content: center;
+    }
+
+    .mission-card .btn-action {
+        padding: 0.5rem 0.65rem;
+        font-size: 0.8rem;
+        min-width: auto;
+    }
+
+    .mission-meta {
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+    }
+
+    .mission-meta-item {
+        font-size: 0.7rem;
+    }
+
+    .mission-status-badge {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.65rem;
     }
 }
