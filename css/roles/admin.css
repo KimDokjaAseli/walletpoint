@@ -5,8 +5,47 @@
     gap: 1.5rem;
 }
 
+/* Modal Form Optimizations */
+.admin-form-modal {
+    width: 95%;
+    max-width: 500px;
+    background: white;
+    border-radius: var(--radius-xl);
+}
+
 @media (max-width: 768px) {
     .admin-stats-grid {
         gap: 1rem;
+    }
+
+    /* Stack grid-2-col inside forms */
+    .admin-form-modal form [style*="display: grid"] {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+    }
+
+    /* Ensure modal-body doesn't overflow */
+    .admin-form-modal .modal-body {
+        padding: 1.25rem !important;
+    }
+
+    /* Bottom sticky behavior for admin forms if they are long */
+    .admin-form-modal {
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: 1.5rem 1.5rem 0 0 !important;
+        bottom: 0 !important;
+        position: fixed !important;
+        max-height: 90vh !important;
+    }
+
+    .admin-form-modal .form-actions {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+    }
+
+    .admin-form-modal .form-actions button {
+        width: 100% !important;
     }
 }

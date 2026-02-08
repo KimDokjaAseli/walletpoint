@@ -528,7 +528,7 @@ class AdminController {
         const isEdit = !!user;
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-card">
+                <div class="modal-card admin-form-modal">
                     <div class="modal-head"><h3>${title}</h3><button class="btn-icon" onclick="closeModal()">×</button></div>
                     <div class="modal-body">
                         <form id="userForm" onsubmit="AdminController.handleUserSubmit(event, ${isEdit ? user.id : 'null'})">
@@ -629,7 +629,7 @@ class AdminController {
         if (id) { try { const res = await API.request(`/admin/products/${id}`, 'GET'); product = res.data; } catch (e) { console.error(e); } }
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-card">
+                <div class="modal-card admin-form-modal">
                     <div class="modal-head"><h3>${id ? '🛠️ Edit' : '🎁 Baru'}</h3><button class="btn-icon" onclick="closeModal()">×</button></div>
                     <div class="modal-body">
                         <form id="productForm" onsubmit="AdminController.handleProductSubmit(event, ${id})">

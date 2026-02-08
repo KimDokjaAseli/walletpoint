@@ -137,7 +137,7 @@ class DosenController {
 
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-card" style="max-width: 1000px; width: 95%; height: 90vh; display: flex; flex-direction: column; position: relative;">
+                <div class="modal-card dosage-modal" style="max-width: 1000px; width: 95%; height: 90vh; display: flex; flex-direction: column; position: relative;">
                     <div class="modal-head" style="background: linear-gradient(to right, #6366f1, #a855f7); color: white; border-bottom: none;">
                         <div style="flex: 1; padding-right: 1.5rem;">
                             <h3 style="margin:0; font-weight: 850; letter-spacing: -0.02em;">${id ? '📝 Edit Penilaian' : '✨ Desain Kuis Baru'}</h3>
@@ -149,34 +149,34 @@ class DosenController {
                     <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 2rem; background: #fdfcfd;">
                         <form id="quizForm" onsubmit="DosenController.handleQuizSubmit(event, ${id})">
                             <!-- Basic Config Card -->
-                            <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary); padding: 1.25rem; background: #fff; box-shadow: var(--shadow-sm);">
-                                <div class="grid-2-col" style="gap: 1.5rem;">
+                            <div class="quiz-config-card">
+                                <div class="grid-2-col">
                                     <div>
                                         <div class="form-group">
-                                            <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Judul Kuis</label>
+                                            <label style="font-weight: 700; color: var(--text-main); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block;">Judul Kuis</label>
                                             <input type="text" name="title" value="${quiz?.title || ''}" required placeholder="misal, Dasar Aljabar" style="border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem;">
                                         </div>
                                         <div class="form-group">
-                                            <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Panduan & Deskripsi</label>
+                                            <label style="font-weight: 700; color: var(--text-main); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block;">Panduan & Deskripsi</label>
                                             <textarea name="description" placeholder="Aturan kuis..." style="min-height: 80px; border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem;">${quiz?.description || ''}</textarea>
                                         </div>
                                     </div>
                                     <div>
                                         <div class="grid-2-col" style="gap: 1rem;">
                                             <div class="form-group">
-                                                <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Alokasi Poin</label>
+                                                <label style="font-weight: 700; color: var(--text-main); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block;">Poin</label>
                                                 <div style="position: relative;">
                                                     <input type="number" name="points" value="${quiz?.points || 100}" required min="1" style="padding-left: 2.8rem; border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem 0.8rem 2.8rem;">
-                                                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem;">💎</span>
+                                                    <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.1rem;">💎</span>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label style="font-weight: 700; color: var(--text-main); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: block;">Deadline</label>
+                                                <label style="font-weight: 700; color: var(--text-main); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; display: block;">Deadline</label>
                                                 <input type="datetime-local" name="deadline" value="${quiz?.deadline ? new Date(quiz.deadline).toISOString().slice(0, 16) : ''}" style="border-radius: 12px; border: 1px solid var(--border); padding: 0.8rem 1rem;">
                                             </div>
                                         </div>
-                                        <div style="background: rgba(99, 102, 241, 0.05); padding: 1rem; border-radius: 12px; font-size: 0.8rem; color: var(--primary); border: 1px dashed var(--primary-light); line-height: 1.5; margin-top: 0.5rem;">
-                                            <strong style="display: block; margin-bottom: 0.25rem;">💡 Tip Pro:</strong> Kuis dengan poin lebih tinggi cenderung memiliki keterlibatan siswa yang lebih baik.
+                                        <div style="background: rgba(99, 102, 241, 0.05); padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.75rem; color: var(--primary); border: 1px dashed var(--primary-light); line-height: 1.4;">
+                                            💡 <strong>Tips:</strong> Berikan poin menarik untuk meningkatkan motivasi belajar siswa!
                                         </div>
                                     </div>
                                 </div>
@@ -184,13 +184,13 @@ class DosenController {
 
                             <!-- Questions Sections -->
                             <div id="questionsContainer">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; background: #fff; position: sticky; top: 0; z-index: 10; padding: 0.5rem 0;">
-                                    <h3 style="margin:0; color: var(--text-main); display: flex; align-items: center; gap: 0.75rem;">
-                                        <span style="background: var(--secondary); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">?</span>
-                                        Quiz Questions (<span id="qCount">0</span>/20)
+                                <div class="quiz-header-sticky">
+                                    <h3 style="margin:0; color: var(--text-main); display: flex; align-items: center; gap: 0.75rem; font-weight: 800;">
+                                        <span style="background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);">?</span>
+                                        Daftar Pertanyaan (<span id="qCount">0</span>/20)
                                     </h3>
-                                    <button type="button" id="btnAddQuestion" class="btn btn-primary" onclick="DosenController.addQuestionField()" style="padding: 0.5rem 1rem; font-size: 0.85rem; border-radius: 2rem;">
-                                        + Tambah Pertanyaan Baru
+                                    <button type="button" id="btnAddQuestion" class="btn btn-primary" onclick="DosenController.addQuestionField()" style="padding: 0.7rem 1.25rem; font-size: 0.85rem; border-radius: 12px; font-weight: 700;">
+                                        + Tambah Pertanyaan
                                     </button>
                                 </div>
                                 <div id="questionsList">
@@ -246,20 +246,23 @@ class DosenController {
 
         const qId = Date.now() + Math.random().toString(16).slice(2);
         const html = `
-            <div class="question-item card fade-in" style="padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); border-left: 5px solid var(--primary); box-shadow: var(--shadow-md); position: relative; border-radius: var(--radius-lg);" id="q-${qId}">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                    <div style="display: flex; gap: 0.75rem; align-items: center; flex: 1;">
-                        <span class="q-number" style="background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem;">${index}</span>
-                        <input type="text" class="question-text" placeholder="Ketik pertanyaan Anda di sini..." value="${data?.question || ''}" required 
-                               style="font-size: 1.1rem; font-weight: 600; border: none; border-bottom: 2px solid #f1f5f9; padding: 0.5rem 0; border-radius: 0; width: 100%;">
+            <div class="question-item fade-in" id="q-${qId}">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; gap: 1rem;">
+                    <div style="display: flex; gap: 1rem; align-items: flex-start; flex: 1;">
+                        <span class="q-number" style="background: var(--primary); color: white; min-width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0;">${index}</span>
+                        <div style="flex: 1;">
+                            <textarea class="question-text" placeholder="Ketik pertanyaan Anda di sini..." required 
+                                   style="font-size: 1.05rem; font-weight: 600; border: none; border-bottom: 2px solid #f1f5f9; padding: 0.5rem 0; border-radius: 0; width: 100%; min-height: 50px; background: transparent; resize: none;" 
+                                   oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'">${data?.question || ''}</textarea>
+                        </div>
                     </div>
-                    <button type="button" class="btn-icon" style="color: var(--error); border: none; background: rgba(239, 68, 68, 0.05); margin-left: 1rem;" 
+                    <button type="button" class="btn-icon" style="color: var(--error); border: none; background: rgba(239, 68, 68, 0.05); min-width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: 0.2s;" 
                             onclick="document.getElementById('q-${qId}').remove(); DosenController.reindexQuestions();" title="Hapus Pertanyaan">
-                        <span style="font-size: 1.2rem;">&times;</span>
+                        <span style="font-size: 1.5rem;">&times;</span>
                     </button>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="quiz-options-grid">
                     ${['A', 'B', 'C', 'D'].map((letter, i) => {
             const optionValue = data?.options ? (data.options[i] || '') : '';
             const isCorrect = data?.answer === optionValue && optionValue !== '';
@@ -278,8 +281,8 @@ class DosenController {
         }).join('')}
                 </div>
                 
-                <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="color: var(--success);">●</span> Pilih tombol radio di sebelah jawaban yang benar.
+                <div style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; background: #f8fafc; padding: 0.6rem 1rem; border-radius: 8px;">
+                    <span style="color: var(--success); font-size: 1.2rem;">🛡️</span> <b>Petunjuk:</b> Klik lingkaran di samping kiri untuk menandai jawaban yang benar.
                 </div>
             </div>
         `;
@@ -481,7 +484,7 @@ class DosenController {
 
         const modalHtml = `
             <div class="modal-overlay" onclick="closeModal(event)">
-                <div class="modal-card" style="max-width: 650px; width: 95%; overflow: hidden; border-radius: var(--radius-xl); position: relative;">
+                <div class="modal-card mission-modal-mobile" style="max-width: 650px; width: 95%; overflow: hidden; border-radius: var(--radius-xl); position: relative;">
                     <div class="modal-head" style="background: var(--primary); color: white; border-bottom: none;">
                         <div style="flex: 1; padding-right: 1.5rem;">
                             <h3 style="margin:0; font-weight: 850; letter-spacing: -0.02em;">${id ? '🛠️ Sempurnakan Misi' : '✨ Arsiteki Misi Baru'}</h3>

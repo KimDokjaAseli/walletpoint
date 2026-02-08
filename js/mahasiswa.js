@@ -848,17 +848,27 @@ class MahasiswaController {
     }
 
     static showTransferForm(receiverId = null) {
-        document.getElementById('transferMenu').style.display = 'none';
-        document.getElementById('transferFormContainer').style.display = 'block';
+        const legacyContainer = document.getElementById('transferFormContainer');
+        if (legacyContainer) {
+            document.getElementById('transferMenu').style.display = 'none';
+            legacyContainer.style.display = 'block';
+        }
 
         if (receiverId) {
-            const input = document.getElementById('receiverIdInput');
+            // Support both old and new hub-based IDs
+            const input = document.getElementById('receiverIdInput') || document.getElementById('transferReceiverId');
             if (input) {
                 input.value = receiverId;
-                this.checkReceiver(receiverId);
+                // Trigger appropriate lookup/check
+                if (input.id === 'transferReceiverId') {
+                    this.lookupReceiver();
+                } else {
+                    this.checkReceiver(receiverId);
+                }
             }
         }
     }
+
 
     static checkReceiver(id) {
         const feedback = document.getElementById('receiverFeedback');
@@ -908,7 +918,13 @@ class MahasiswaController {
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         data.amount = parseInt(data.amount);
-        data.receiver_user_id = parseInt(data.receiver_id);
+
+        // Use confirmed recipient ID if available, otherwise use input
+        if (this.currentRecipient) {
+            data.receiver_user_id = this.currentRecipient.id;
+        } else {
+            data.receiver_user_id = parseInt(data.receiver_id);
+        }
         delete data.receiver_id;
 
         const btn = e.target.querySelector('button[type="submit"]');
@@ -1147,13 +1163,62 @@ class MahasiswaController {
                         <textarea name="description" placeholder="Contoh: Bayar makan siang..." style="padding: 1rem; border-radius: 12px;"></textarea>
                     </div>
 
+                    <p id="transferBalanceText" style="font-size: 0.9rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">
+                        Saldo tersedia: <strong id="hubTransferBalance">0</strong> Pts
+                    </p>
+
                     <button type="submit" class="btn btn-primary" id="transferBtn" style="width: 100%; padding: 1rem; border-radius: 16px; font-weight: 800; margin-top: 1rem; font-size: 1.1rem;">
                         Kirim Poin 🚀
                     </button>
                 </form>
             </div>
         `;
+
+        // Load balance
+        this.updateHubBalance();
     }
+
+    static async updateHubBalance() {
+        try {
+            const wallet = await API.getWallet();
+            const balanceEl = document.getElementById('hubTransferBalance');
+            if (balanceEl) balanceEl.textContent = wallet.data.balance.toLocaleString();
+        } catch (e) { console.error(e); }
+    }
+
+    static async lookupReceiver() {
+        const input = document.getElementById('transferReceiverId');
+        const display = document.getElementById('receiverNameDisplay');
+        const id = input.value.trim();
+
+        if (!id) return;
+
+        display.innerHTML = '<span class="spinner" style="width:12px; height:12px; border-width:2px;"></span> Mencari...';
+
+        try {
+            const res = await API.lookupUser(id);
+            const user = res.data;
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+
+            if (user.id == currentUser.id) {
+                display.innerHTML = '<span style="color:var(--error);">❌ Tidak bisa kirim ke sendiri</span>';
+                this.currentRecipient = null;
+                return;
+            }
+
+            this.currentRecipient = user;
+            display.innerHTML = `<span style="color:var(--success);">✅ ${user.full_name} (${user.role})</span>`;
+        } catch (e) {
+            display.innerHTML = '<span style="color:var(--error);">❌ Pengguna tidak ditemukan</span>';
+            this.currentRecipient = null;
+        }
+    }
+
+    static async handleTransfer(e) {
+        // Alias for compatibility with the hub form
+        return this.handleTransferSubmit(e);
+    }
+
 
     // Reuse existing startScanner logic but accept fileInputId
     static startScanner(fileInputId = 'studentQrFileInput') {
