@@ -1,47 +1,59 @@
 .auth-page {
-    background: radial-gradient(circle at top left, #eef2ff 0%, #ffffff 50%, #fdf2f8 100%);
+    background: #ffffff;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     min-height: 100vh;
-    padding: 1.5rem;
+    padding: 0;
 }
 
 .login-container {
-    background: var(--bg-card);
-    padding: 3rem;
-    border-radius: var(--radius-2xl);
-    box-shadow: var(--shadow-premium);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem 2rem;
     width: 100%;
-    max-width: 480px;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    animation: scaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fadeIn 0.6s ease-out;
 }
 
 .logo-big {
-    font-size: 3rem;
-    font-weight: 900;
-    text-align: center;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    font-weight: 850;
+    color: var(--primary);
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.login-header {
+    margin-bottom: 2.5rem;
 }
 
 .login-header h2 {
-    font-size: 1.75rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
     color: var(--text-main);
-    text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     letter-spacing: -0.02em;
 }
 
-@media (max-width: 480px) {
+.login-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+@media (min-width: 1024px) {
+    .auth-page {
+        background: var(--bg-main);
+        justify-content: center;
+        align-items: center;
+    }
+
     .login-container {
-        padding: 2rem 1.5rem;
+        flex: none;
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        max-width: 440px;
+        padding: 3.5rem;
     }
 }

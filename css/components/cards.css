@@ -1,101 +1,82 @@
 .stat-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: var(--radius-2xl);
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
 }
 
-.stat-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
-}
-
-.stat-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 100%;
-    background: var(--primary);
+.stat-card:active {
+    transform: scale(0.98);
 }
 
 .stat-label {
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
+    font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     display: block;
 }
 
 .stat-value {
-    font-size: 3rem;
-    font-weight: 900;
+    font-size: 1.75rem;
+    font-weight: 800;
     color: var(--text-main);
-    line-height: 1;
-    letter-spacing: -0.03em;
-}
-
-@media (max-width: 768px) {
-    .stat-card {
-        padding: 1.75rem;
-        border-radius: var(--radius-xl);
-    }
-
-    .stat-value {
-        font-size: 2.25rem;
-    }
+    line-height: 1.2;
+    letter-spacing: -0.01em;
 }
 
 /* Gradients */
+.card-gradient {
+    color: white;
+}
+
+.card-gradient .stat-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.card-gradient .stat-value {
+    color: white;
+}
+
 .card-gradient-1 {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
 }
 
 .card-gradient-2 {
-    background: linear-gradient(135deg, #ec4899, #f43f5e) !important;
-    color: white !important;
+    background: linear-gradient(135deg, #ec4899, #d946ef);
 }
 
 .card-gradient-3 {
-    background: linear-gradient(135deg, #10b981, #34d399) !important;
-    color: white !important;
-}
-
-.card-gradient-4 {
-    background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
-    color: white !important;
-}
-
-[class*="card-gradient-"]::after {
-    display: none !important;
+    background: linear-gradient(135deg, #10b981, #059669);
 }
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
 
-/* Tablet */
-@media (max-width: 768px) {
+@media (min-width: 640px) {
     .card-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.25rem;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Mobile */
-@media (max-width: 480px) {
+@media (min-width: 1024px) {
     .card-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 2rem;
+    }
+
+    .stat-value {
+        font-size: 2.25rem;
     }
 }

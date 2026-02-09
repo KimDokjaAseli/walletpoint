@@ -2,35 +2,44 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem 1.75rem;
-    font-weight: 700;
-    border-radius: var(--radius-lg);
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     border: none;
-    font-size: 1rem;
-    gap: 0.75rem;
+    font-size: 0.95rem;
+    gap: 0.5rem;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .btn:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
+    opacity: 0.9;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary);
     color: white;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: #f0f2f5;
+    color: var(--text-main);
+}
+
+.btn-secondary:hover {
+    background: #e4e6eb;
 }
 
 .btn-block {
     width: 100%;
-    display: flex;
-    justify-content: center;
 }
 
 .btn-sm {
@@ -39,8 +48,8 @@
 }
 
 .btn-icon {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,10 +57,9 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    font-size: 1.25rem;
-    transition: all 0.2s;
+    transition: background 0.2s;
 }
 
-.btn-icon:hover {
+.btn-icon:active {
     background: rgba(0, 0, 0, 0.05);
 }

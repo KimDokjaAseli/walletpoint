@@ -1,43 +1,43 @@
 /* Mahasiswa Specific Styles */
 .student-hero {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    border-radius: 24px;
-    padding: 2.5rem;
+    background: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
     color: white;
     position: relative;
     overflow: hidden;
     margin-bottom: 2rem;
-    box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 12px 32px rgba(99, 102, 241, 0.15);
 }
 
 .student-hero::before {
     content: '';
     position: absolute;
-    top: -50px;
-    right: -50px;
+    top: -20%;
+    right: -10%;
     width: 200px;
     height: 200px;
-    background: rgba(255, 255, 255, 0.1);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     border-radius: 50%;
 }
 
 .balance-card {
     display: inline-flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 0.5rem 1rem;
-    border-radius: 12px;
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
     .student-hero {
-        padding: 1.5rem;
-    }
-
-    .student-hero h2 {
-        font-size: 1.75rem !important;
+        padding: 1.5rem 1.25rem;
+        border-radius: var(--radius-lg);
     }
 }

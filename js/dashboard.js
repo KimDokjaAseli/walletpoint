@@ -1,4 +1,27 @@
-document.addEventListener('DOMContentLoaded', async () => {
+// Use deviceready for Cordova or DOMContentLoaded for Browser
+document.addEventListener('deviceready', initApp, false);
+
+// Fallback for browser development
+if (!window.cordova) {
+    document.addEventListener('DOMContentLoaded', initApp, false);
+}
+
+async function initApp() {
+    console.log('WalletPoint Initializing...');
+
+    // Cordova Specific Setup
+    if (window.cordova) {
+        // StatusBar Setup
+        if (window.StatusBar) {
+            StatusBar.backgroundColorByHexString('#6366f1');
+            StatusBar.styleLightContent();
+        }
+        // Hide Splashscreen
+        if (navigator.splashscreen) {
+            setTimeout(() => navigator.splashscreen.hide(), 500);
+        }
+    }
+
     // Check Auth
     const token = localStorage.getItem('token');
     if (!token) {
@@ -22,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Dashboard Init Error:', error);
         // If profile fetch fails heavily, might redirect to login (handled in API.getProfile)
     }
-});
+}
 
 function updateUserProfile(user) {
     document.getElementById('userName').textContent = user.full_name || user.email;

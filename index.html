@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard - Wallet Point</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WalletPoint - Mobile Wallet</title>
 
     <!-- Google Fonts: Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,32 +19,29 @@
 
 <body>
     <div class="dashboard-layout">
-        <!-- Mobile Sidebar Overlay -->
+        <!-- Overlay for Sidebar -->
         <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-        <!-- Sidebar (Mainly for Desktop or Extra Settings) -->
+        <!-- Sidebar (Desktop & Tablet) -->
         <aside class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
                 <div class="brand-text">WalletPoint</div>
             </div>
 
             <nav class="nav-menu" id="sidebarNav">
-                <!-- Navigation items will be injected by JS -->
+                <!-- Navigation items injected by JS -->
             </nav>
 
             <div class="profile-footer">
-                <div class="user-pill">
+                <div class="user-pill" onclick="handleNavigation('profile')">
                     <div class="user-avatar" id="userAvatar">?</div>
-                    <div class="user-details" style="flex: 1;">
-                        <h4 id="userName"
-                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px;">
-                            Nama Pengguna</h4>
-                        <span id="userRole" style="text-transform: capitalize;">Peran</span>
+                    <div class="user-details">
+                        <h4 id="userName">Nama Pengguna</h4>
+                        <span id="userRole">Peran</span>
                     </div>
                 </div>
-                <button onclick="API.logout()" class="btn btn-block"
-                    style="margin-top: 1.5rem; color: var(--error); background: #fee2e2; padding: 0.8rem; border-radius: 12px; font-weight: 700;">
-                    Keluar
+                <button onclick="API.logout()" class="btn btn-secondary btn-block" style="margin-top: 1rem; color: var(--error);">
+                    Keluar Akun
                 </button>
             </div>
         </aside>
@@ -52,9 +49,8 @@
         <!-- Main Content Area -->
         <main class="main-content">
             <header class="top-bar">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <button id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle Sidebar"
-                        style="background: #f1f5f9; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <button id="sidebarToggle" onclick="toggleSidebar()" class="btn-icon" aria-label="Toggle Navigation">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -63,29 +59,30 @@
                         </svg>
                     </button>
                     <div class="page-info">
-                        <h1 id="pageTitle">Ringkasan</h1>
+                        <h1 id="pageTitle">Dashboard</h1>
                     </div>
                 </div>
 
                 <div class="top-actions">
-                    <div id="userInitialsDesktop" class="user-avatar"
-                        style="width: 40px; height: 40px; font-size: 0.9rem; cursor: pointer; border: 2px solid white; box-shadow: var(--shadow-sm);"
-                        onclick="handleNavigation('profile')">?</div>
+                    <div id="userInitialsDesktop" class="user-avatar" 
+                         style="width: 36px; height: 36px; font-size: 0.85rem; cursor: pointer;"
+                         onclick="handleNavigation('profile')">?</div>
                 </div>
             </header>
 
             <div class="content-body" id="mainContent">
-                <!-- Dashboard content will be injected here -->
+                <!-- Content injected here -->
             </div>
         </main>
 
-        <!-- Modern Bottom Navigation (Mobile Only) -->
+        <!-- Bottom Navigation (Mobile Only) -->
         <nav class="bottom-nav" id="mobileBottomNav">
-            <!-- Items injected by JS based on role -->
+            <!-- Nav items injected by JS -->
         </nav>
     </div>
 
     <!-- Scripts -->
+    <script src="cordova.js"></script>
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/admin.js"></script>

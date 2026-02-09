@@ -1114,10 +1114,23 @@ class MahasiswaController {
 
     static renderScannerInHub() {
         const container = document.getElementById('hubContent');
+        const isNative = window.cordova && window.cloudSky && window.cloudSky.BarcodeScanner;
+
         container.innerHTML = `
-            <div style="max-width: 500px; margin: 0 auto; position: relative;">
-                <div id="qr-reader" style="width: 100%; border-radius: 16px; overflow: hidden; background: #000;"></div>
-                <div id="qr-feedback" style="margin-top: 1rem; text-align: center; color: var(--text-muted); font-weight: 600;">Mengaktifkan kamera...</div>
+            <div style="max-width: 500px; margin: 0 auto; position: relative; text-align: center;">
+                ${isNative ? `
+                    <div style="padding: 2rem; background: #f8fafc; border-radius: 20px; border: 2px dashed var(--primary); margin-bottom: 2rem;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">📸</div>
+                        <h3 style="margin-bottom: 0.5rem;">Scanner Native Siap</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Gunakan kamera HP Anda untuk pemindaian yang lebih cepat dan akurat.</p>
+                        <button class="btn btn-primary" onclick="MahasiswaController.startScanner()" style="width: 100%; padding: 1rem; border-radius: 12px; font-weight: 700;">
+                            Mulai Memindai Sekarang
+                        </button>
+                    </div>
+                ` : `
+                    <div id="qr-reader" style="width: 100%; border-radius: 16px; overflow: hidden; background: #000;"></div>
+                    <div id="qr-feedback" style="margin-top: 1rem; text-align: center; color: var(--text-muted); font-weight: 600;">Mengaktifkan kamera...</div>
+                `}
                 
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 2rem;">
                     <label for="studentQrFileInputHub" class="btn" style="background: rgba(99, 102, 241, 0.05); color: var(--primary); border: 2px dashed var(--primary); padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%;">
@@ -1131,7 +1144,9 @@ class MahasiswaController {
                 </div>
             </div>
         `;
-        setTimeout(() => this.startScanner('studentQrFileInputHub'), 100);
+        if (!isNative) {
+            setTimeout(() => this.startScanner('studentQrFileInputHub'), 100);
+        }
     }
 
     static renderTransferInHub() {
@@ -1222,6 +1237,36 @@ class MahasiswaController {
 
     // Reuse existing startScanner logic but accept fileInputId
     static startScanner(fileInputId = 'studentQrFileInput') {
+        // CORDOVA NATIVE SCANNER SUPPORT
+        if (window.cordova && window.cloudSky && window.cloudSky.BarcodeScanner) {
+            const feedback = document.getElementById('qr-feedback');
+            if (feedback) feedback.innerHTML = "Memulai Scanner Native...";
+
+            cloudSky.BarcodeScanner.scan(
+                (result) => {
+                    if (!result.cancelled) {
+                        this.handleScanResult(result.text);
+                    } else {
+                        if (feedback) feedback.innerHTML = "Pemindaian dibatalkan.";
+                    }
+                },
+                (error) => {
+                    showToast("Gagal Memindai: " + error, "error");
+                },
+                {
+                    preferFrontCamera: false,
+                    showFlipCameraButton: true,
+                    showTorchButton: true,
+                    prompt: "Arahkan kamera ke QR Code",
+                    resultDisplayDuration: 500,
+                    formats: "QR_CODE",
+                    orientation: "portrait"
+                }
+            );
+            return;
+        }
+
+        // BROWSER FALLBACK (Html5Qrcode)
         const html5QrCode = new Html5Qrcode("qr-reader");
         const feedback = document.getElementById('qr-feedback');
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };

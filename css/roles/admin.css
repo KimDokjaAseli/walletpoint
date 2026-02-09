@@ -1,51 +1,39 @@
 /* Admin Role Styles */
-.admin-stats-grid {
+.stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
-/* Modal Form Optimizations */
-.admin-form-modal {
-    width: 95%;
-    max-width: 500px;
-    background: white;
-    border-radius: var(--radius-xl);
+@media (min-width: 640px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-@media (max-width: 768px) {
-    .admin-stats-grid {
-        gap: 1rem;
+@media (min-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
     }
+}
 
-    /* Stack grid-2-col inside forms */
-    .admin-form-modal form [style*="display: grid"] {
-        grid-template-columns: 1fr !important;
-        gap: 0 !important;
-    }
+.stat-trend {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+}
 
-    /* Ensure modal-body doesn't overflow */
-    .admin-form-modal .modal-body {
-        padding: 1.25rem !important;
-    }
+/* Form layouts in modals */
+.admin-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
 
-    /* Bottom sticky behavior for admin forms if they are long */
-    .admin-form-modal {
-        max-width: 100% !important;
-        width: 100% !important;
-        border-radius: 1.5rem 1.5rem 0 0 !important;
-        bottom: 0 !important;
-        position: fixed !important;
-        max-height: 90vh !important;
-    }
-
-    .admin-form-modal .form-actions {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 0.75rem !important;
-    }
-
-    .admin-form-modal .form-actions button {
-        width: 100% !important;
+@media (min-width: 640px) {
+    .admin-form-row {
+        grid-template-columns: 1fr 1fr;
     }
 }

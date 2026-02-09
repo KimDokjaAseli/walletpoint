@@ -1,13 +1,14 @@
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .form-group label {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-main);
     margin-bottom: 0.5rem;
+    padding-left: 2px;
 }
 
 input[type="text"],
@@ -17,19 +18,26 @@ input[type="number"],
 select,
 textarea {
     width: 100%;
-    padding: 1rem 1.25rem;
-    background: white;
-    border: 2px solid #f1f5f9;
-    border-radius: var(--radius-lg);
+    padding: 0.75rem 1rem;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     font-size: 1rem;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
     color: var(--text-main);
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
     outline: none;
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-    background: white;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
 }

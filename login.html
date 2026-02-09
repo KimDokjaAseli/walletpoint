@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Masuk - Wallet Point</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Masuk - WalletPoint</title>
 
     <!-- Google Fonts: Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,36 +18,45 @@
 
 <body class="auth-page">
     <div class="login-container">
+        <div class="logo-big">WP</div>
+
         <div class="login-header">
-            <div class="logo-big">WP</div>
             <h2>Selamat Datang</h2>
-            <p
-                style="color: var(--text-muted); text-align: center; margin-bottom: 2.5rem; font-size: 0.95rem; font-weight: 500;">
-                Silakan masuk untuk melanjutkan</p>
+            <p>Silakan masuk ke akun Anda</p>
         </div>
+
         <form id="loginForm">
             <div id="errorMessage" class="error hidden"
                 style="margin-bottom: 1.5rem; padding: 1rem; background: #fee2e2; color: #991b1b; border-radius: 12px; font-size: 0.875rem; font-weight: 600; border: 1px solid #fecaca;">
             </div>
+
             <div class="form-group">
-                <label for="email">Alamat Email</label>
+                <label for="email">Email</label>
                 <input type="email" id="email" placeholder="nama@email.com" required autocomplete="email">
             </div>
+
             <div class="form-group">
                 <label for="password">Kata Sandi</label>
-                <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+                <input type="password" id="password" placeholder="Masukkan kata sandi" required
+                    autocomplete="current-password">
             </div>
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem; padding: 1.1rem;">Masuk
-                Sekarang</button>
-            <p
-                style="text-align: center; margin-top: 2rem; font-size: 0.9rem; font-weight: 500; color: var(--text-muted);">
-                Belum punya akun? <a href="register.html"
-                    style="color: var(--primary); text-decoration: none; font-weight: 700;">Buat Akun Baru</a>
-            </p>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                Masuk Sekarang
+            </button>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <p style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">
+                    Belum punya akun?
+                    <a href="register.html"
+                        style="color: var(--primary); text-decoration: none; font-weight: 700;">Daftar Disini</a>
+                </p>
+            </div>
         </form>
     </div>
 
     <!-- Scripts -->
+    <script src="cordova.js"></script>
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
