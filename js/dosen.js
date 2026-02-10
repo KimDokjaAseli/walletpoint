@@ -579,7 +579,18 @@ class DosenController {
     }
 
     static async deleteMission(id) {
-        if (!confirm("Apakah Anda yakin ingin menghapus misi ini?")) return;
+        const message = "Apakah Anda yakin ingin menghapus misi ini?";
+        let confirmed = false;
+
+        if (window.navigator && navigator.notification && navigator.notification.confirm) {
+            confirmed = await new Promise(resolve => {
+                navigator.notification.confirm(message, (idx) => resolve(idx === 1), "Konfirmasi Hapus", ["Hapus", "Batal"]);
+            });
+        } else {
+            confirmed = confirm(message);
+        }
+
+        if (!confirmed) return;
         try {
             await API.deleteMission(id);
             showToast("Misi dihapus");
@@ -796,9 +807,9 @@ class DosenController {
                     }
                     return `
                                 <div style="margin-top: 1rem;">
-                                    <a href="${viewUrl}" target="_blank" class="btn" style="background: white; color: var(--primary); border: 1px solid var(--primary); font-size: 0.85rem; width: 100%; font-weight: 600; text-align: center; display: block; text-decoration: none;">
+                                    <button type="button" class="btn" style="background: white; color: var(--primary); border: 1px solid var(--primary); font-size: 0.85rem; width: 100%; font-weight: 600; text-align: center; display: block; cursor: pointer;" onclick="window.open('${viewUrl}', '_blank', 'location=yes')">
                                         Lihat Dokumentasi Pendukung 🖇️
-                                    </a>
+                                    </button>
                                 </div>`;
                 })() : ''}
 

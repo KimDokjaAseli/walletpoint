@@ -23,7 +23,7 @@ class MahasiswaController {
                 </div>
 
                 <!-- Filter Tabs -->
-                <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm);">
+                <div class="filter-tabs tabs-container" style="margin-bottom: 2rem; background: #fff; padding: 0.5rem; border-radius: 12px; border: 1px solid var(--border); width: 100%; box-shadow: var(--shadow-sm); display: flex; overflow-x: auto; gap: 0.5rem; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
                     <button class="tab-btn active" onclick="MahasiswaController.filterMissions('all', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; background: var(--primary); color: white; white-space: nowrap; transition: 0.3s;">Semua Item</button>
                     <button class="tab-btn" onclick="MahasiswaController.filterMissions('quiz', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent; color: var(--text-muted); white-space: nowrap; transition: 0.3s;">Kuis</button>
                     <button class="tab-btn" onclick="MahasiswaController.filterMissions('task', this)" style="padding: 0.6rem 1.25rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: transparent; color: var(--text-muted); white-space: nowrap; transition: 0.3s;">Tugas</button>
@@ -315,8 +315,19 @@ class MahasiswaController {
         }
     }
 
-    static confirmCloseQuiz() {
-        if (confirm("Apakah Anda yakin ingin keluar? Kemajuan Anda tidak akan disimpan.")) {
+    static async confirmCloseQuiz() {
+        const message = "Apakah Anda yakin ingin keluar? Kemajuan Anda tidak akan disimpan.";
+        let confirmed = false;
+        
+        if (window.navigator && navigator.notification && navigator.notification.confirm) {
+            confirmed = await new Promise(resolve => {
+                navigator.notification.confirm(message, (idx) => resolve(idx === 1), "Konfirmasi Keluar", ["Ya, Keluar", "Batal"]);
+            });
+        } else {
+            confirmed = confirm(message);
+        }
+
+        if (confirmed) {
             const m = document.getElementById('quizModal');
             if (m) m.remove();
         }
@@ -348,15 +359,27 @@ class MahasiswaController {
                                     <label style="font-weight: 600;">Laporan / Jawaban Teks</label>
                                     <textarea name="content" required placeholder="Jelaskan hasil pekerjaan Anda di sini..." style="min-height: 120px; border-radius: 12px; border: 1px solid var(--border); padding: 1rem;"></textarea>
                                 </div>
-                                <div class="form-group" style="margin-bottom:0;">
+                                 <div class="form-group" style="margin-bottom:0.5rem;">
                                     <label style="font-weight: 600;">Unggah Bukti File (Opsional)</label>
-                                    <div style="border: 2px dashed var(--border); padding: 2rem; border-radius: 12px; text-align: center; background: #fafafa; position: relative; cursor: pointer;" 
-                                         onclick="this.querySelector('input').click()">
-                                        <input type="file" name="file" accept="image/*,.pdf" style="display: none;" onchange="this.parentElement.querySelector('p').textContent = this.files[0].name; this.parentElement.style.borderColor = 'var(--primary)';">
-                                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
-                                        <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem;">Klik untuk memilih file atau seret ke sini</p>
-                                        <small style="color: #94a3b8; display: block; margin-top: 0.5rem;">Maksimal 10MB (PDF, JPG, PNG)</small>
+                                    <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+                                        <button type="button" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px;" onclick="MahasiswaController.takePictureForSubmission()">
+                                            📸 Ambil Foto
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 12px;" onclick="document.getElementById('fileInput').click()">
+                                            📁 Galeri / File
+                                        </button>
                                     </div>
+                                    <div id="filePreviewContainer" style="display: none; margin-bottom: 1rem;">
+                                        <img id="submissionPreview" style="width: 100%; height: 150px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border);">
+                                    </div>
+                                    <div style="border: 2px dashed var(--border); padding: 1.5rem; border-radius: 12px; text-align: center; background: #fafafa; position: relative; cursor: pointer; display: none;" 
+                                         id="fileDropZone"
+                                         onclick="document.getElementById('fileInput').click()">
+                                        <input type="file" id="fileInput" name="file" accept="image/*,.pdf" style="display: none;" onchange="MahasiswaController.handleFileSelect(this)">
+                                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📁</div>
+                                        <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem;" id="fileNameDisplay">Klik untuk memilih file</p>
+                                    </div>
+                                    <input type="file" id="fileInput" name="file" accept="image/*,.pdf" style="display: none;" onchange="MahasiswaController.handleFileSelect(this)">
                                 </div>
                             </form>
                         </div>
@@ -375,15 +398,95 @@ class MahasiswaController {
         }
     }
 
+    static handleFileSelect(input) {
+        const display = document.getElementById('fileNameDisplay');
+        const preview = document.getElementById('submissionPreview');
+        const previewContainer = document.getElementById('filePreviewContainer');
+        
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            if (display) display.textContent = file.name;
+            
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (preview) preview.src = e.target.result;
+                    if (previewContainer) previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (previewContainer) previewContainer.style.display = 'none';
+            }
+        }
+    }
+
+    static takePictureForSubmission() {
+        if (!window.navigator || !navigator.camera) {
+            showToast("Kamera tidak tersedia di browser ini. Gunakan fitur unggah galeri.", "warning");
+            document.getElementById('fileInput').click();
+            return;
+        }
+
+        navigator.camera.getPicture(
+            (imageData) => {
+                // Construct a file object or use the data directly
+                // For simplicity, we can show a preview and store the base64/URI
+                const preview = document.getElementById('submissionPreview');
+                const previewContainer = document.getElementById('filePreviewContainer');
+                const display = document.getElementById('fileNameDisplay');
+                
+                if (preview) preview.src = "data:image/jpeg;base64," + imageData;
+                if (previewContainer) previewContainer.style.display = 'block';
+                if (display) display.textContent = "Foto Kamera Berhasil Diambil";
+
+                // We need to attach this to form submission
+                this.capturedImageData = imageData;
+            },
+            (error) => {
+                console.error("Camera error:", error);
+            },
+            {
+                quality: 50,
+                destinationType: navigator.camera.DestinationType.DATA_URL,
+                encodingType: navigator.camera.EncodingType.JPEG,
+                mediaType: navigator.camera.MediaType.PICTURE,
+                correctOrientation: true,
+                targetWidth: 1024,
+                targetHeight: 1024
+            }
+        );
+    }
+
     static async handleMissionSubmission(e, missionId) {
         e.preventDefault();
-        const formData = new FormData(e.target);
+        const form = e.target;
+        const formData = new FormData(form);
         formData.append('mission_id', missionId);
+        
+        // If we have captured image data, we need to convert it to a Blob and append
+        if (this.capturedImageData) {
+            const byteString = atob(this.capturedImageData);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            const blob = new Blob([ab], { type: 'image/jpeg' });
+            formData.set('file', blob, 'camera_capture.jpg');
+            this.capturedImageData = null; // Reset
+        }
+
+        // Robust button selection (might be inside or outside form)
+        let submitBtn = form.querySelector('button[type="submit"]');
+        if (!submitBtn && form.id) {
+            submitBtn = document.querySelector(`button[type="submit"][form="${form.id}"]`);
+        }
 
         try {
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Memproses...';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Memproses...';
+            }
 
             await API.submitMissionSubmission(formData);
             showToast("Misi berhasil dikirim! Hadiah menunggu peninjauan.", "success");
@@ -392,9 +495,10 @@ class MahasiswaController {
         } catch (error) {
             console.error(error);
             showToast(error.message || "Gagal mengirim misi", "error");
-            const submitBtn = e.target.querySelector('button[type="submit"]'); // Re-select button in case of error
-            submitBtn.disabled = false;
-            submitBtn.textContent = '🚀 Kirim Sekarang';
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Kirim Sekarang';
+            }
         }
     }
 
@@ -582,7 +686,18 @@ class MahasiswaController {
     }
 
     static async removeFromCart(itemId) {
-        if (!confirm("Hapus item?")) return;
+        const message = "Hapus item ini dari keranjang?";
+        let confirmed = false;
+
+        if (window.navigator && navigator.notification && navigator.notification.confirm) {
+            confirmed = await new Promise(resolve => {
+                navigator.notification.confirm(message, (idx) => resolve(idx === 1), "Konfirmasi Hapus", ["Hapus", "Batal"]);
+            });
+        } else {
+            confirmed = confirm(message);
+        }
+
+        if (!confirmed) return;
         try {
             await API.request(`/mahasiswa/marketplace/cart/${itemId}`, 'DELETE');
             // Refresh modal
@@ -1237,9 +1352,33 @@ class MahasiswaController {
 
     // Reuse existing startScanner logic but accept fileInputId
     static startScanner(fileInputId = 'studentQrFileInput') {
-        // CORDOVA NATIVE SCANNER SUPPORT
+        const feedback = document.getElementById('qr-feedback');
+
+        // CORDOVA MLKIT SCANNER SUPPORT
+        if (window.cordova && cordova.plugins && cordova.plugins.mlkit && cordova.plugins.mlkit.barcodeScanner) {
+            if (feedback) feedback.innerHTML = "Memulai Scanner Native (MLKit)...";
+
+            cordova.plugins.mlkit.barcodeScanner.scan(
+                {
+                    detectorSize: 0.6,
+                    formats: "QR_CODE"
+                },
+                (result) => {
+                    if (result && result.text) {
+                        this.handleScanResult(result.text);
+                    } else if (feedback) {
+                        feedback.innerHTML = "Pemindaian dibatalkan.";
+                    }
+                },
+                (error) => {
+                    showToast("Gagal Memindai: " + error, "error");
+                }
+            );
+            return;
+        }
+
+        // CORDOVA CLOUDSKY FALLBACK
         if (window.cordova && window.cloudSky && window.cloudSky.BarcodeScanner) {
-            const feedback = document.getElementById('qr-feedback');
             if (feedback) feedback.innerHTML = "Memulai Scanner Native...";
 
             cloudSky.BarcodeScanner.scan(
@@ -1268,7 +1407,6 @@ class MahasiswaController {
 
         // BROWSER FALLBACK (Html5Qrcode)
         const html5QrCode = new Html5Qrcode("qr-reader");
-        const feedback = document.getElementById('qr-feedback');
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
         html5QrCode.start(
@@ -1281,7 +1419,7 @@ class MahasiswaController {
             },
             (errorMessage) => { }
         ).catch(err => {
-            feedback.innerHTML = `<span style="color: var(--text-muted); font-size: 0.8rem;">Kamera tidak aktif. Gunakan opsi unggah file.</span>`;
+            if (feedback) feedback.innerHTML = `<span style="color: var(--text-muted); font-size: 0.8rem;">Kamera tidak aktif. Gunakan opsi unggah file.</span>`;
         });
 
         // Handle File Scan
@@ -1290,7 +1428,7 @@ class MahasiswaController {
             fileInput.addEventListener('change', async e => {
                 if (e.target.files.length === 0) return;
                 const file = e.target.files[0];
-                feedback.innerHTML = "📸 Memproses file...";
+                if (feedback) feedback.innerHTML = "📸 Memproses file...";
 
                 try { await html5QrCode.stop(); } catch (err) { }
 
@@ -1610,59 +1748,80 @@ class MahasiswaController {
         e.preventDefault();
         const form = e.target;
         const formData = Object.fromEntries(new FormData(form).entries());
-        const btn = document.getElementById('fastPayBtn');
-
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Memproses...';
-
-        try {
-            if (formData.payment_method === 'qr') {
-                // Generate Payment Token WPT:...
+        
+        if (formData.payment_method === 'qr') {
+            const btn = document.getElementById('fastPayBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Memproses...';
+            try {
                 const tokenRes = await API.generatePaymentToken({
                     amount: price,
                     merchant: prodName,
                     type: 'purchase',
                     recipient_id: parseInt(recipientId) || 0
                 });
-
                 document.getElementById('checkoutModal').remove();
                 this.showPaymentQR(tokenRes.data);
-                return;
+            } catch (err) {
+                showToast("Gagal generate QR: " + err.message, "error");
+                btn.disabled = false;
+                btn.innerHTML = "Konfirmasi Pembayaran 🚀";
             }
+            return;
+        }
 
-            // Direct Wallet Payment
+        await this.executePurchase({
+            product_id: prodId,
+            name: prodName,
+            price: price,
+            pin: formData.pin,
+            student_name: formData.student_name,
+            student_npm: formData.student_npm,
+            btnId: 'fastPayBtn'
+        });
+    }
+
+    static async executePurchase({ product_id, name, price, pin, student_name, student_npm, btnId }) {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Memproses...';
+        }
+
+        try {
             await API.purchaseProduct({
-                product_id: prodId,
+                product_id: product_id,
                 quantity: 1,
-                pin: formData.pin,
+                pin: pin,
                 payment_method: 'wallet',
-                student_name: formData.student_name,
-                student_npm: formData.student_npm,
+                student_name: student_name || '-',
+                student_npm: student_npm || '-',
                 student_major: '-',
                 student_batch: '-'
             });
 
-            document.getElementById('checkoutModal').remove();
-            this.showSuccessNotification(prodName, price);
+            const checkoutModal = document.getElementById('checkoutModal');
+            if (checkoutModal) checkoutModal.remove();
+            
+            this.showSuccessNotification(name, price);
 
-            // Refresh dashboard after payment
+            // Refresh balance
             if (document.getElementById('student-balance')) {
                 const updatedWallet = await API.getWallet();
                 document.getElementById('student-balance').textContent = updatedWallet.data.balance.toLocaleString();
             }
 
-            // Fix: Refresh Shop to update stock
-            if (document.getElementById('shopGrid')) {
-                this.renderShop();
-            }
-            // Also refresh ledger if open
-            if (document.getElementById('ledgerTable')) {
-                this.renderLedger();
-            }
+            // Refresh Shop & Ledger
+            if (document.getElementById('shopGrid')) this.renderShop();
+            if (document.getElementById('ledgerTable')) this.renderLedger();
+
         } catch (e) {
             showToast("Pembayaran Gagal: " + e.message, "error");
-            btn.disabled = false;
-            btn.textContent = "Konfirmasi Pembayaran 🚀";
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = btnId === 'directPayBtn' ? '⚡ Bayar Instan (Poin)' : 'Konfirmasi Pembayaran 🚀';
+            }
+            throw e;
         }
     }
 
@@ -1673,21 +1832,23 @@ class MahasiswaController {
 
         const modalHtml = `
             <div class="modal-overlay" id="paymentTokenModal">
-                <div class="modal-card" style="max-width: 450px; text-align: center; padding: 2.5rem; border-radius: 28px; box-shadow: var(--shadow-lg);">
-                    <div style="background: var(--primary-light); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--primary); font-size: 1.5rem;">🕒</div>
-                    <h3 style="margin-bottom: 0.5rem; font-weight: 800; color: var(--text-main);">QR Pembayaran Aktif</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Pindai kode ini untuk menyelesaikan pembayaran. Berlaku selama 10 menit.</p>
-                    
-                    <div id="payment-qr-container" style="display: flex; justify-content: center; margin-bottom: 2rem; background: white; padding: 1.25rem; border-radius: 20px; border: 2px solid var(--primary-light);"></div>
-                    
-                    <div style="background: #f8fafc; padding: 1.25rem; border-radius: 16px; margin-bottom: 2rem; border: 1px solid var(--border);">
-                        <div style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">${tokenData.merchant}</div>
-                        <div style="color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-top: 0.25rem;">💎 ${tokenData.amount.toLocaleString()} Pts</div>
+                <div class="modal-card" style="max-width: 480px;">
+                    <div class="modal-body" style="text-align: center; padding: 2rem 1.5rem;">
+                        <div style="background: rgba(99, 102, 241, 0.1); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--primary); font-size: 1.75rem;">🕒</div>
+                        <h3 style="margin-bottom: 0.5rem; font-weight: 800; color: var(--text-main);">QR Pembayaran Aktif</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Pindai kode ini untuk menyelesaikan pembayaran. Berlaku selama 10 menit.</p>
+                        
+                        <div id="payment-qr-container" style="display: flex; justify-content: center; margin-bottom: 1.5rem; background: white; padding: 1rem; border-radius: 20px; border: 2px solid var(--border);"></div>
+                        
+                        <div style="background: #f8fafc; padding: 1.25rem; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 1rem;">
+                            <div style="font-weight: 700; color: var(--text-main); font-size: 1rem;">${tokenData.merchant}</div>
+                            <div style="color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-top: 0.25rem;">💎 ${tokenData.amount.toLocaleString()} Pts</div>
+                        </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
-                        <button class="btn btn-primary" onclick="MahasiswaController.downloadQR('payment-qr-container', 'WP_Payment')" style="padding: 1rem; border-radius: 14px; font-weight: 700; background: var(--primary); border: none;">Simpan QR ke Galeri 💾</button>
-                        <button class="btn btn-secondary" onclick="document.getElementById('paymentTokenModal').remove()" style="padding: 1rem; border-radius: 14px; color: var(--text-muted); border: none; font-weight: 600;">Lanjutkan Nanti (Berjalan di Background)</button>
+                    <div class="modal-foot" style="flex-direction: column; gap: 0.75rem;">
+                        <button class="btn btn-primary btn-block" onclick="MahasiswaController.downloadQR('payment-qr-container', 'WP_Payment')" style="padding: 1rem; border-radius: 14px; font-weight: 700;">Simpan QR ke Galeri 💾</button>
+                        <button class="btn btn-secondary btn-block" onclick="document.getElementById('paymentTokenModal').remove()" style="padding: 1rem; border-radius: 14px; color: var(--text-muted); background: #f1f5f9; border: none; font-weight: 600;">Lanjutkan Nanti</button>
                     </div>
                 </div>
             </div>
@@ -1710,34 +1871,29 @@ class MahasiswaController {
     static generateItemQR(id, name, price) {
         const modalHtml = `
             <div class="modal-overlay" id="qrItemModal" onclick="closeModal(event)">
-                <div class="modal-card" style="max-width: 450px;">
+                <div class="modal-card" style="max-width: 480px;">
                     <div class="modal-head">
-                        <h3 style="font-weight: 800; color: var(--text-main); margin: 0;">📸 Kode QR Produk</h3>
+                        <h3 style="font-weight: 800; color: var(--text-main); margin: 0;">📸 Pindai & Bayar</h3>
                         <button class="btn-icon" onclick="closeModal()">×</button>
                     </div>
-                    <div class="modal-body" style="text-align: center;">
-                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Pilih metode penyelesaian transaksi Anda</p>
+                    <div class="modal-body" style="text-align: center; padding: 1.5rem;">
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Gunakan QR di bawah atau pilih bayar instan.</p>
                         
-                        <div id="product-qr-display" style="display: flex; justify-content: center; margin-bottom: 2rem; background: white; padding: 1rem; border-radius: 16px; border: 2px solid var(--primary-light);"></div>
+                        <div id="product-qr-display" style="display: flex; justify-content: center; margin-bottom: 1.5rem; background: white; padding: 1rem; border-radius: 16px; border: 2px solid var(--border);"></div>
                         
-                        <div style="background: #f8fafc; padding: 1.25rem; border-radius: 16px; margin-bottom: 2rem; border: 1px solid var(--border);">
-                            <div style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">${name}</div>
+                        <div style="background: #f8fafc; padding: 1rem; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 0.5rem;">
+                            <div style="font-weight: 700; color: var(--text-main); font-size: 1rem;">${name}</div>
                             <div style="color: var(--primary); font-weight: 800; font-size: 1.3rem;">💎 ${price.toLocaleString()} Pts</div>
                         </div>
+                    </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                            <button class="btn btn-primary" id="directPayBtn" onclick="MahasiswaController.processDirectFromQR(${id}, '${name}', ${price})" style="padding: 1rem; border-radius: 12px;">
-                                ⚡ Bayar Instan (Poin)
-                            </button>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                                <button class="btn btn-secondary" onclick="MahasiswaController.downloadQR('product-qr-display', '${name}')" style="padding: 0.8rem; border-radius: 12px;">
-                                    💾 Simpan
-                                </button>
-                                <button class="btn btn-secondary" onclick="closeModal()" style="padding: 0.8rem; border-radius: 12px; background: #f1f5f9; border: none;">
-                                    Batal
-                                </button>
-                            </div>
+                    <div class="modal-foot" style="flex-direction: column; gap: 0.6rem;">
+                        <button class="btn btn-primary btn-block" id="directPayBtn" onclick="MahasiswaController.processDirectFromQR(${id}, '${name}', ${price})" style="padding: 1.1rem; border-radius: 14px; font-weight: 800;">
+                            ⚡ Bayar Sekarang (Poin)
+                        </button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%;">
+                            <button class="btn btn-secondary" onclick="MahasiswaController.downloadQR('product-qr-display', '${name}')" style="background: #f1f5f9; border: none; padding: 0.8rem; border-radius: 12px; font-weight: 700;">💾 Simpan</button>
+                            <button class="btn btn-secondary" onclick="closeModal()" style="background: #fee2e2; color: #ef4444; border: none; padding: 0.8rem; border-radius: 12px; font-weight: 700;">Batal</button>
                         </div>
                     </div>
                 </div>
@@ -1757,30 +1913,89 @@ class MahasiswaController {
     }
 
     static async processDirectFromQR(id, name, price) {
-        if (!confirm(`Konfirmasi pembayaran instan untuk ${name}?`)) return;
+        const message = `Konfirmasi pembayaran instan untuk ${name}?`;
+        let confirmed = false;
 
-        const btn = document.getElementById('directPayBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Memproses...';
+        if (window.navigator && navigator.notification && navigator.notification.confirm) {
+            confirmed = await new Promise(resolve => {
+                navigator.notification.confirm(message, (idx) => resolve(idx === 1), "Konfirmasi Pembayaran", ["Ya, Bayar", "Batal"]);
+            });
+        } else {
+            confirmed = confirm(message);
+        }
+
+        if (!confirmed) return;
+
+        // Secure PIN Request
+        let pin = null;
+        if (window.navigator && navigator.notification && navigator.notification.prompt) {
+            pin = await new Promise(resolve => {
+                navigator.notification.prompt("Masukkan PIN Keamanan Anda:", (result) => {
+                    if (result.buttonIndex === 1) resolve(result.input1);
+                    else resolve(null);
+                }, "Otentikasi Pembayaran", ["Bayar", "Batal"], "");
+            });
+        } else {
+            pin = prompt("Masukkan PIN Keamanan:");
+        }
+
+        if (!pin) return;
+
+        const user = JSON.parse(localStorage.getItem('user')) || {};
 
         try {
-            await this.handleFastCheckout(id, name, price);
+            await this.executePurchase({
+                product_id: id,
+                name: name,
+                price: price,
+                pin: pin,
+                student_name: user.full_name,
+                student_npm: user.nim_nip,
+                btnId: 'directPayBtn'
+            });
+            
             // close the QR modal if payment is successful
             const qrModal = document.getElementById('qrItemModal');
             if (qrModal) qrModal.remove();
         } catch (e) {
-            btn.disabled = false;
-            btn.innerHTML = '⚡ Bayar Instan (Poin)';
+            // Error already handled in executePurchase
         }
     }
 
     static downloadQR(elementId, filename) {
         const canvas = document.querySelector(`#${elementId} canvas`);
-        const link = document.createElement('a');
-        link.download = `QR-${filename.replace(/\s+/g, '-')}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-        showToast("QR Berhasil Disimpan", "success");
+        if (!canvas) {
+            showToast("QR belum siap untuk diunduh", "error");
+            return;
+        }
+
+        const dataUrl = canvas.toDataURL("image/png");
+
+        // IF CORDOVA WITH PLUGIN
+        if (window.cordova && cordova.plugins && cordova.plugins.base64ToGallery) {
+            showToast("⌛ Menyimpan ke Galeri...", "info");
+            
+            cordova.plugins.base64ToGallery(
+                dataUrl.split(',')[1], // remove header
+                { prefix: 'WP_', mediaScanner: true },
+                (path) => {
+                    showToast("✅ Berhasil disimpan ke Galeri!", "success");
+                },
+                (err) => {
+                    showToast("❌ Gagal simpan: " + err, "error");
+                }
+            );
+        } else if (window.cordova) {
+            // CORDOVA WITHOUT PLUGIN: Show instruction
+            showToast("Gunakan Tangkapan Layar (Screenshot) atau tahan gambar untuk simpan.", "info");
+        } else {
+            // BROWSER FALLBACK
+            const link = document.createElement('a');
+            link.download = `QR-${filename.replace(/\s+/g, '-')}.png`;
+            link.href = dataUrl;
+            link.click();
+            showToast("QR Diunduh (Browser)", "success");
+        }
     }
 
     static showSuccessNotification(name, price) {

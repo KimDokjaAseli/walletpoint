@@ -563,12 +563,34 @@ class AdminController {
         } catch (e) { showToast(e.message, 'error'); }
     }
     static async toggleUserStatus(id, newStatus) {
-        if (!confirm(`Ubah status?`)) return;
+        const message = `Ubah status pengguna ini menjadi ${newStatus}?`;
+        let confirmed = false;
+
+        if (window.navigator && navigator.notification && navigator.notification.confirm) {
+            confirmed = await new Promise(resolve => {
+                navigator.notification.confirm(message, (idx) => resolve(idx === 1), "Konfirmasi Status", ["Ya", "Batal"]);
+            });
+        } else {
+            confirmed = confirm(message);
+        }
+
+        if (!confirmed) return;
         try { await API.updateUser(id, { status: newStatus }); AdminController.renderUsers(); } catch (e) { showToast(e.message, 'error'); }
     }
     static async resetPassword(id) {
-        const pw = prompt("Password baru:");
-        if (pw) try { await API.resetUserPassword(id, pw); showToast('Selesai'); } catch (e) { showToast(e.message, 'error'); }
+        let pw = null;
+        if (window.navigator && navigator.notification && navigator.notification.prompt) {
+            pw = await new Promise(resolve => {
+                navigator.notification.prompt("Masukkan password baru untuk pengguna ini:", (result) => {
+                    if (result.buttonIndex === 1) resolve(result.input1);
+                    else resolve(null);
+                }, "Reset Password", ["Simpan", "Batal"], "");
+            });
+        } else {
+            pw = prompt("Password baru:");
+        }
+
+        if (pw) try { await API.resetUserPassword(id, pw); showToast('Password berhasil direset'); } catch (e) { showToast(e.message, 'error'); }
     }
 
     static showAdjustModal(walletId, userName) {
@@ -619,8 +641,20 @@ class AdminController {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.target).entries());
         data.wallet_id = parseInt(data.wallet_id); data.new_balance = parseInt(data.new_balance);
-        if (!confirm("Reset?")) return;
-        try { await API.resetWallet(data); closeModal(); AdminController.renderUsers('wallets'); showToast('Selesai'); } catch (e) { showToast(e.message, 'error'); }
+        
+        const message = "Apakah Anda yakin ingin melakukan reset saldo dompet ini? Tindakan ini tidak dapat dibatalkan.";
+        let confirmed = false;
+
+        if (window.navigator && navigator.notification && navigator.notification.confirm) {
+            confirmed = await new Promise(resolve => {
+                navigator.notification.confirm(message, (idx) => resolve(idx === 1), "Peringatan Reset", ["Reset Sekarang", "Batal"]);
+            });
+        } else {
+            confirmed = confirm(message);
+        }
+
+        if (!confirmed) return;
+        try { await API.resetWallet(data); closeModal(); AdminController.renderUsers('wallets'); showToast('Dompet berhasil direset'); } catch (e) { showToast(e.message, 'error'); }
     }
 
 
@@ -675,7 +709,18 @@ class AdminController {
         } catch (e) { showToast(e.message, "error"); }
     }
     static async deleteProduct(id) {
-        if (!confirm('Hapus?')) return;
+        const message = "Hapus produk ini secara permanen?";
+        let confirmed = false;
+
+        if (window.navigator && navigator.notification && navigator.notification.confirm) {
+            confirmed = await new Promise(resolve => {
+                navigator.notification.confirm(message, (idx) => resolve(idx === 1), "Konfirmasi Hapus", ["Hapus", "Batal"]);
+            });
+        } else {
+            confirmed = confirm(message);
+        }
+
+        if (!confirmed) return;
         try { await API.deleteProduct(id); AdminController.renderProducts('catalog'); } catch (e) { showToast(e.message, 'error'); }
     }
 

@@ -92,7 +92,7 @@
 }
 
 .bottom-nav-icon {
-    font-size: 1.5rem;
+    font-size: 1.35rem; /* Better balance with labels */
 }
 
 /* Mobile Responsive Sidebar/Nav */

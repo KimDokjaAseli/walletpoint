@@ -48,10 +48,15 @@ async function initApp() {
 }
 
 function updateUserProfile(user) {
-    document.getElementById('userName').textContent = user.full_name || user.email;
-    document.getElementById('userRole').textContent = user.role;
-    const initial = (user.full_name || user.email).charAt(0).toUpperCase();
-    document.getElementById('userAvatar').textContent = initial;
+    const nameElem = document.getElementById('userName');
+    const roleElem = document.getElementById('userRole');
+    const avatarElem = document.getElementById('userAvatar');
+    const initial = (user.full_name || user.email || '?').charAt(0).toUpperCase();
+
+    if (nameElem) nameElem.textContent = user.full_name || user.email;
+    if (roleElem) roleElem.textContent = user.role;
+    if (avatarElem) avatarElem.textContent = initial;
+    
     if (document.getElementById('userInitialsDesktop')) {
         document.getElementById('userInitialsDesktop').textContent = initial;
     }

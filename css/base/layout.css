@@ -13,11 +13,10 @@
     -webkit-text-size-adjust: 100%;
 }
 
-html,
-body {
+html, body {
     height: 100%;
     width: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
     background-color: var(--bg-main);
 }
 
@@ -25,15 +24,16 @@ body {
     color: var(--text-main);
     display: flex;
     flex-direction: column;
-    /* Important for mobile webview bounce effects */
-    overscroll-behavior-y: none;
 }
 
+/* Dashboard layout should be full height and non-scrolling itself */
 .dashboard-layout {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
+    height: 100vh;
+    height: -webkit-fill-available;
+    width: 100vw;
+    overflow: hidden;
 }
 
 .main-content {
@@ -41,16 +41,26 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    /* Accounting for safe areas on mobile */
-    padding-left: var(--safe-left);
-    padding-right: var(--safe-right);
-    /* Space for bottom nav on mobile */
-    margin-bottom: var(--bottom-nav-height);
+    overflow: hidden; 
+    position: relative;
+}
+
+.content-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 1.5rem;
+    padding-left: calc(1.5rem + var(--safe-left));
+    padding-right: calc(1.5rem + var(--safe-right));
+    /* High bottom padding to clear mobile nav */
+    padding-bottom: 160px !important;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    min-height: 0; /* Important for flex child scrolling */
 }
 
 .top-bar {
     height: calc(var(--header-height) + var(--safe-top));
-    padding: var(--safe-top) 1.5rem 0 1.5rem;
+    padding: var(--safe-top) 1.25rem 0 1.25rem;
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -63,19 +73,23 @@ body {
     z-index: 100;
 }
 
+.page-info {
+    flex: 1;
+    min-width: 0;
+    margin-right: 1rem;
+}
+
 .page-info h1 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.content-body {
-    flex: 1;
-    padding: 1.5rem;
-    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    width: 100%;
-}
+/* Content body will be handled by the structure above */
 
 /* Sidebar behavior for Desktop */
 @media (min-width: 1024px) {
@@ -85,7 +99,8 @@ body {
 
     .main-content {
         margin-left: var(--sidebar-width);
-        margin-bottom: 0;
+        padding: 0;
+        height: 100vh;
     }
 
     .top-bar {
@@ -95,6 +110,7 @@ body {
 
     .content-body {
         padding: 2.5rem;
+        padding-bottom: 2.5rem !important; /* Reset mobile padding */
     }
 
     .page-info h1 {
