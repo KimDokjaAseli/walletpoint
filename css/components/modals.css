@@ -42,6 +42,7 @@
     padding: 1.5rem;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    flex: 1; /* Ensure body takes up available space */
 }
 
 .modal-foot {
@@ -50,6 +51,8 @@
     display: flex;
     gap: 0.75rem;
     justify-content: flex-end;
+    background: white;
+    z-index: 10;
 }
 
 @media (max-width: 1023px) {
@@ -60,19 +63,29 @@
 
     .modal-card {
         max-width: none;
-        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        max-height: 92vh; /* Slightly more room on mobile */
+        border-radius: 28px 28px 0 0; /* More rounded premium look */
         animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        padding-bottom: var(--safe-bottom);
+        padding-bottom: calc(var(--safe-bottom) + 0.5rem);
+    }
+
+    .modal-body {
+        padding: 1.25rem 1.5rem 2rem 1.5rem;
+    }
+
+    .modal-foot {
+        padding: 1rem 1.5rem calc(var(--safe-bottom) + 1rem) 1.5rem;
+        box-shadow: 0 -10px 20px rgba(0,0,0,0.03);
     }
 
     /* Bottom Sheet Handle */
     .modal-card::before {
         content: '';
-        width: 36px;
-        height: 4px;
+        width: 40px;
+        height: 5px;
         background: #e4e6eb;
-        border-radius: 2px;
-        margin: 12px auto 0;
+        border-radius: 10px;
+        margin: 12px auto 8px;
         flex-shrink: 0;
     }
 }

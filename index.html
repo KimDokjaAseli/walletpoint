@@ -32,17 +32,14 @@
                 <!-- Navigation items injected by JS -->
             </nav>
 
-            <div class="profile-footer">
-                <div class="user-pill" onclick="handleNavigation('profile')">
-                    <div class="user-avatar" id="userAvatar">?</div>
-                    <div class="user-details">
-                        <h4 id="userName">Nama Pengguna</h4>
-                        <span id="userRole">Peran</span>
+            <div class="sidebar-user-section" style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);">
+                <div class="user-pill" onclick="handleNavigation('profile')" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 16px; background: #f8fafc; cursor: pointer;">
+                    <div class="user-avatar" id="userAvatar" style="width: 40px; height: 40px; background: var(--primary); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;">?</div>
+                    <div class="user-details" style="flex: 1; overflow: hidden;">
+                        <h4 id="userName" style="margin: 0; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nama Pengguna</h4>
+                        <span id="userRole" style="font-size: 0.75rem; color: var(--text-muted); text-transform: capitalize;">Peran</span>
                     </div>
                 </div>
-                <button onclick="API.logout()" class="btn btn-secondary btn-block" style="margin-top: 1rem; color: var(--error);">
-                    Keluar Akun
-                </button>
             </div>
         </aside>
 

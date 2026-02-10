@@ -85,6 +85,12 @@ class ProfileController {
                                 </form>
                             </div>
                         </div>
+                        <!-- Logout Button -->
+                        <div class="card fade-in" style="margin-top: 1rem; border: 1px solid rgba(250, 62, 62, 0.2); background: rgba(250, 62, 62, 0.03); border-radius: 20px;">
+                            <button onclick="API.logout()" class="btn btn-block" style="padding: 1.25rem; color: var(--error); font-weight: 800; font-size: 1.1rem; background: transparent; border: none;">
+                                🚪 Keluar dari Aplikasi
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
